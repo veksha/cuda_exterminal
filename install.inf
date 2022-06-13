@@ -1,0 +1,12 @@
+[info]
+title=Simple terminal example
+desc=(Fill the description)
+type=cudatext-plugin
+subdir=cuda_example_terminal
+homepage=(Fill the GitHub repo URL)
+
+[item2]
+section=commands
+caption=Simple terminal example
+method=run
+
