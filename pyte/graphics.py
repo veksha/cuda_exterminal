@@ -100,7 +100,7 @@ BG_AIXTERM = {
     102: "brightgreen",
     103: "brightbrown",
     104: "brightblue",
-    105: "bfightmagenta",
+    105: "brightmagenta",
     106: "brightcyan",
     107: "brightwhite"
 }

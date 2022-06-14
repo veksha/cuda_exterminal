@@ -332,6 +332,10 @@ class Stream(object):
                         # currently supported.
                         yield
                         break
+                    elif char == "%": # ESC[0%m
+                        # unknown sequence or MS bug?
+                        yield
+                        break
                     else:
                         params.append(min(int(current or 0), 9999))
 

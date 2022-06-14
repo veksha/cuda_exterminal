@@ -1,0 +1,1 @@
+for x in 0 1; do for i in {30..37} X {90..97}; do if [ $i = "X" ]; then echo; else echo -ne "\e[$x;$i""m\\\e[$x;$i""m\e[0m "; fi; done; echo; done; echo

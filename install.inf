@@ -1,12 +1,26 @@
 [info]
-title=Simple terminal example
+title=Example Terminal
 desc=(Fill the description)
 type=cudatext-plugin
 subdir=cuda_example_terminal
 homepage=(Fill the GitHub repo URL)
 
+[item1]
+section=events
+events=on_exit,on_state~
+
 [item2]
 section=commands
-caption=Simple terminal example
-method=run
+caption=Example Terminal
+method=open
 
+[item3]
+section=commands
+caption=Example Terminal\Config
+method=config
+menu=o
+
+[bottombar1]
+hint=Example Terminal
+icon={dir}/terminal.png
+method=open
