@@ -22,7 +22,7 @@ from .MemoScreen import MemoScreen, DebugScreen, ctrl, colmap
 if IS_WIN:
     from .conpty.conpty import ConPty
 else:
-    import pty
+    import pty, array, termios, fcntl
 
 opt_colors = False
 opt_floating = False
@@ -45,7 +45,8 @@ class Command:
         if DEBUG:
             self.dbg_pos = 0
 #            self.dbg_data = '\x1b[?2004h\x1b]0;lubuntu@lubuntu2204: ~/.config/cudatext/py/cuda_example_terminal\x07\x1b[01;32mlubuntu@lubuntu2204\x1b[00m:\x1b[01;34m~/.config/cudatext/py/cuda_example_terminal\x1b[00m$ env\r\n\x1b[?2004l\rSHELL=/bin/bash\r\nQT_ACCESSIBILITY=1\r\nXDG_CONFIG_DIRS=/etc/xdg/xdg-Lubuntu:/etc/xdg:/etc:/usr/share\r\n'
-            self.dbg_data = '\x1b[m\x1b[?25l\x1b[K\r\n\x1b]0;\xd0\x90\xd0\xb4\xd0\xbc\xd0\xb8\xd0\xbd\xd0\xb8\xd1\x81\xd1\x82\xd1\x80\xd0\xb0\xd1\x82\xd0\xbe\xd1\x80: C:\\WINDOWS\\SYSTEM32\\cmd.exe - vim\x07\x1b[?25h\x1b[?25l\x1b[H\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\x1b[H\x1b[?25h\x1b[22;0;0t\x1b[?2004h\x1b[?1004h\x1b[22;2t\x1b[22;1t\x1b[2J\x1b[0%m\x1b[?12$p\x1b[?25l\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\r\n\x1b[K\x1b[H\x1b[?25h\x1b[?25l\x1b[94m\r\n~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                        \x1b[40X\x1b[mVIM - Vi IMproved                                          \x1b[K\x1b[94m~                                                                                                   \x1b[K~                                         \x1b[41X\x1b[mversion 8.2.3582                                          \x1b[K\x1b[94m~                                     \x1b[37X\x1b[mby Bram Moolenaar et al.                                      \x1b[K\x1b[94m~                           \x1b[27X\x1b[mVim is open source and freely distributable                             \x1b[K\x1b[94m~                                                                                                   \x1b[K~                                  \x1b[34X\x1b[mHelp poor children in Uganda!                                    \x1b[K\x1b[94m~                          \x1b[26X\x1b[mtype  :help iccf\x1b[34m<Enter>       \x1b[mfor information                            \x1b[K\x1b[94m~                                                                                                   \x1b[K~                          \x1b[26X\x1b[mtype  :q\x1b[34m<Enter>               \x1b[15X\x1b[mto exit                                    \x1b[K\x1b[94m~                          \x1b[26X\x1b[mtype  :help\x1b[34m<Enter>  \x1b[mor  \x1b[34m<F1>  \x1b[mfor on-line help                           \x1b[K\x1b[94m~                          \x1b[26X\x1b[mtype  :help version8\x1b[34m<Enter>   \x1b[mfor version info                           \x1b[K\x1b[94m~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K~                                                                                                   \x1b[K\x1b[m\x1b[1m\x1b[7m[No Name] [unix] (01:59 01/01/1970)                                                        0,0-1 All\x1b[H\x1b[?25h'
+            #self.dbg_data = '\x1b[1;1H\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\x1b[1;205H\x1b[?2004l\x1b[?1006l\x1b[?1002l\x1b[?1001r\x1b[?1l\x1b>\x1b[18;1H\x1b(B\x1b[m\x1b[39;49m\r\x1b[K\r\x1b[?1049l\x1b[23;0;0t\x1b[39;49m\r\n\x1b[?2004h\x1b]0;lubuntu@lubuntu2204: ~/.config/cudatext/py/cuda_example_terminal\x07\x1b[01;32mlubuntu@lubuntu2204\x1b[00m:\x1b[01;34m~/.config/cudatext/py/cuda_example_terminal\x1b[00m$ '
+            self.dbg_data = '\x1b[1;205H\x1b[?2004l\x1b[?1006l\x1b[?1002l\x1b[?1001r\x1b[?1l\x1b>\x1b[18;1H\x1b(B\x1b[m\x1b[39;49m\r\x1b[K\r\x1b[?1049l\x1b[23;0;0t\x1b[39;49m\r\n\x1b[?2004h\x1b]0;lubuntu@lubuntu2204: ~/.config/cudatext/py/cuda_example_terminal\x07\x1b[01;32mlubuntu@lubuntu2204\x1b[00m:\x1b[01;34m~/.config/cudatext/py/cuda_example_terminal\x1b[00m$ '
 
         h = dlg_proc(0, DLG_CREATE)
         dlg_proc(h, DLG_PROP_SET, prop={
@@ -79,6 +80,9 @@ class Command:
         self.memo.set_prop(PROP_MICROMAP, False)
 #        self.memo.set_prop(PROP_HILITE_CUR_LINE, True)
         self.memo.set_prop(PROP_CARET_STOP_UNFOCUSED, True)
+
+        self.memo.set_prop(PROP_CARET_VIEW, (-100, 3, False))
+        self.memo.set_prop(PROP_CARET_VIEW_RO, self.memo.get_prop(PROP_CARET_VIEW))
 
         self.memo.set_prop(PROP_THEMED, False)
         self.memo.set_prop(PROP_COLOR, (COLOR_ID_TextFont, colmap['foreground']))
@@ -172,13 +176,13 @@ class Command:
             else:
                 SHELL = SHELL_UNIX
                 all_env.update({
-                    "COLUMNS":str(self.screen_width),
-                    "LINES":str(self.screen_height),
                     #"COLORTERM":"truecolor",
                 })
                 self.master, self.slave = pty.openpty()
                 self.shell = Popen([SHELL], preexec_fn=os.setsid, stdin=self.slave, stdout=self.slave, stderr=self.slave,
                                     universal_newlines=True, env=all_env, cwd=cwd)
+                self.send_winsize(self.screen_height, self.screen_width)
+
         except Exception as e:
             print('NOTE:',e,SHELL)
             self.memo.set_prop(PROP_RO, False)
@@ -254,6 +258,7 @@ class Command:
 
             p = self.dbg_pos
             if p < len(self.dbg_data):
+                print('feeding:',self.dbg_data[p:p+STEP])
                 self.stream.feed(self.dbg_data[p:p+STEP])
                 pass;               DEBUG_FEED and self.dstream.feed(self.dbg_data[p:p+STEP])
                 self.screen.memo_update()
@@ -280,6 +285,9 @@ class Command:
                 elif 65 <= key <= 90:
                     self.write(chr(key-64))
                     return False
+                elif key == keys.VK_BACKSPACE:
+                    self.write(ctrl.BS)
+                    return False
                 elif key == keys.VK_HOME:
                     self.write(ctrl.ESC+'[1;5H')
                     return False
@@ -303,6 +311,9 @@ class Command:
                     return False
                 elif 43+144 <= key <= 90+144:
                     self.write(ctrl.ESC+chr(key-144))
+                    return False
+                elif key == keys.VK_BACKSPACE:
+                    self.write(ctrl.ESC+ctrl.BS)
                     return False
             elif data == 's':
                 if 0:pass # shift + key
@@ -392,12 +403,20 @@ class Command:
                     return False
         return True
 
+    def send_winsize(self, h, w):
+        if IS_WIN:
+            self.write("\x1b[8;{};{}t".format(h, w))
+        else:
+            winsize = array.array("h", [h,w,0,0,])
+            # Send winsize to target terminal.
+            fcntl.ioctl(self.master, termios.TIOCSWINSZ, winsize)
+
     def terminal_resize(self, tag='', info=''):
         self.visible_columns = self.memo.get_prop(PROP_VISIBLE_COLUMNS)
         self.visible_lines   = self.memo.get_prop(PROP_VISIBLE_LINES)
         if self.visible_columns > 0 and self.visible_lines > 0:
             self.screen.resize(self.visible_lines,self.visible_columns-2)
-            self.write("\x1b[8;{};{}t".format(self.visible_lines,self.visible_columns-2))
+            self.send_winsize(self.visible_lines, self.visible_columns-2)
 
     def form_resize(self, ag, aid='', data=''):
         prop = dlg_proc(self.h_dlg, DLG_PROP_GET)

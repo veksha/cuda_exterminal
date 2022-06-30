@@ -52,16 +52,23 @@ class MemoScreen(HistoryScreen):
         super(MemoScreen, self).set_title(param)
         dlg_proc(self.h_dlg, DLG_PROP_SET, name='form', prop={'cap': param})
 
+    def strip_trailing_whitespace(self):
+        self.no_ro()
+        self.memo.set_text_all(self.memo.get_text_all().strip())
+        self.ro()
+
+    def resize(self, lines=None, columns=None):
+        super(MemoScreen, self).resize(lines, columns)
+        # try to strip white-space on terminal resize (will work on next resize, unfortunately)
+        self.strip_trailing_whitespace()
+
     def index(self):
         super(MemoScreen, self).index()
 
         self.no_ro()
         if self.memo.get_line_count()-1 < self.cursor.y:
-            self.refresh_caret()
-            self.memo.cmd(cmds.cCommand_GotoLineAbsEnd)
-            carets = self.memo.get_carets()
-            x1, y1, _, _ = carets[0]
-            self.memo.insert(x1, y1, '\n')
+            self.memo.set_text_line(-1, '')
+
         self.ro()
 
     def refresh_caret(self):
@@ -74,7 +81,7 @@ class MemoScreen(HistoryScreen):
             self.no_ro()
             y = self.cursor.y
             while self.memo.get_line_count() < line:
-                self.memo.insert(len(self.buffer[y]), y, '\n')
+                self.memo.set_text_line(-1, '')
             self.ro()
 
     def cursor_to_line(self, line=None):
@@ -83,7 +90,7 @@ class MemoScreen(HistoryScreen):
         self.no_ro()
         y = self.cursor.y
         while self.memo.get_line_count() < line:
-            self.memo.insert(len(self.buffer[y]), y, '\n')
+            self.memo.set_text_line(-1, '')
         self.ro()
 
     def memo_update(self):
@@ -97,13 +104,20 @@ class MemoScreen(HistoryScreen):
             for x in range(self.columns): # apply colors to history lines
                 self.apply_colors(x, self.top-1, chars)
             self.top += 1
+            #print("top =",self.top)
 
         # draw screen dirty lines
-        for y in self.dirty:
-            text = self.render(y)
-            self.memo.set_text_line(y+self.top-1,text)
-            for x in range(self.columns): # apply colors to dirty lines
-                self.apply_colors(x, y+self.top-1, self.buffer[y])
+        for y_buffer in self.dirty:
+            y_memo = y_buffer + self.top - 1
+            # add newlines as needed
+            while self.memo.get_line_count()-1 < y_memo:
+                self.memo.set_text_line(-1, '')
+            # draw text
+            text = self.render(y_buffer)
+            self.memo.set_text_line(y_memo, text)
+            # apply colors to dirty lines
+            for x in range(self.columns):
+                self.apply_colors(x, y_memo, self.buffer[y_buffer])
 
         self.dirty.clear()
 

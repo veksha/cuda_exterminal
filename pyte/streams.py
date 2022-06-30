@@ -205,7 +205,7 @@ class Stream(object):
             # Reset the parser state to make sure it is usable even
             # after receiving an exception. See PR #101 for details.
             self._initialize_parser()
-            raise
+            #raise
 
     def _initialize_parser(self):
         self._parser = self._parser_fsm()
