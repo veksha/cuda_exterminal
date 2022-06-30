@@ -74,8 +74,8 @@ class Command:
 #        self.memo.set_prop(PROP_WRAP, WRAP_ON_WINDOW)
         self.memo.set_prop(PROP_RO, True)
         self.memo.set_prop(PROP_CARET_VIRTUAL, True)
-        self.memo.set_prop(PROP_GUTTER_ALL, False)
-#        self.memo.set_prop(PROP_GUTTER_STATES, False)
+        #self.memo.set_prop(PROP_GUTTER_ALL, False)
+        self.memo.set_prop(PROP_GUTTER_STATES, False)
         self.memo.set_prop(PROP_MINIMAP, False)
         self.memo.set_prop(PROP_MICROMAP, False)
 #        self.memo.set_prop(PROP_HILITE_CUR_LINE, True)
@@ -152,7 +152,7 @@ class Command:
 #        self.screen_height = 25
         self.screen_width = self.visible_columns-3
 
-        self.screen = MemoScreen(self.memo, self.screen_width, self.screen_height, self.screen_height, self.h_dlg, colored=opt_colors)
+        self.screen = MemoScreen(self.memo, self.screen_width, self.screen_height, self.h_dlg, colored=opt_colors)
         self.screen.write_process_input = self.write
         if DEBUG:
             self.screen.debug = self.debug
