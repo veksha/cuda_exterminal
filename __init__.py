@@ -227,6 +227,16 @@ class Command:
 
             self.screen.memo_update()
             self.screen.refresh_caret()
+
+            # remove trailing empty lines
+            self.memo.set_prop(PROP_RO, False)
+            for line in reversed(range(self.memo.get_line_count())):
+                txt = self.memo.get_text_line(line)
+                if txt is not None and txt.strip() == '':
+                    self.memo.replace_lines(line, line, [])
+                else: break
+            self.memo.set_prop(PROP_RO, True)
+
             self.memo.set_prop(PROP_SCROLL_VERT, self.screen.top-1)
 
             if not IS_WIN: # on Linux memo is not immediately repainted for some reason
