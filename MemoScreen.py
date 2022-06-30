@@ -13,14 +13,13 @@ def BGRtoRGB(hex_string):
     return int(rev(hex_string),16)
 
 class MemoScreen(HistoryScreen):
-    def __init__(self, memo, columns, lines, screen_height, h_dlg, colored=0):
+    def __init__(self, memo, columns, lines, h_dlg, colored=0):
         self.memo = memo
         self.h_dlg = h_dlg
         self.no_ro = partial(self.memo.set_prop, PROP_RO, False)
         self.ro = partial(self.memo.set_prop, PROP_RO, True)
 
         self.top = 1
-        self.screen_height = screen_height
         self.colored = colored
 
         super(MemoScreen, self).__init__(columns, lines, sys.maxsize)
@@ -54,13 +53,15 @@ class MemoScreen(HistoryScreen):
 
     def strip_trailing_whitespace(self):
         self.no_ro()
-        self.memo.set_text_all(self.memo.get_text_all().strip())
+        # TODO: this is bad, i need something better
+        #self.memo.set_text_all(self.memo.get_text_all().strip())
         self.ro()
 
     def resize(self, lines=None, columns=None):
         super(MemoScreen, self).resize(lines, columns)
         # try to strip white-space on terminal resize (will work on next resize, unfortunately)
         self.strip_trailing_whitespace()
+        self.memo.focus() # handy, but can be annoying to some
 
     def index(self):
         super(MemoScreen, self).index()
