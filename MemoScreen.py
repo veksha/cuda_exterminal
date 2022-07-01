@@ -141,7 +141,9 @@ class MemoScreen(HistoryScreen):
 
         fg, bg = colors
         if reverse: fg, bg = bg, fg
-        self.memo.attr(MARKERS_DELETE_BY_POS, x=x, y=y)
+        try: # try new API, could be missing
+            self.memo.attr(MARKERS_DELETE_BY_POS, x=x, y=y)
+        except: pass
         self.memo.attr(MARKERS_ADD, x=x, y=y, len=1, color_font=fg, color_bg=bg, font_bold=bold)
 
 
