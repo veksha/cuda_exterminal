@@ -74,12 +74,14 @@ class Command:
 #        self.memo.set_prop(PROP_WRAP, WRAP_ON_WINDOW)
         self.memo.set_prop(PROP_RO, True)
         self.memo.set_prop(PROP_CARET_VIRTUAL, True)
-        #self.memo.set_prop(PROP_GUTTER_ALL, False)
-        self.memo.set_prop(PROP_GUTTER_STATES, False)
+        self.memo.set_prop(PROP_GUTTER_ALL, False)
+#        self.memo.set_prop(PROP_GUTTER_STATES, False)
         self.memo.set_prop(PROP_MINIMAP, False)
         self.memo.set_prop(PROP_MICROMAP, False)
 #        self.memo.set_prop(PROP_HILITE_CUR_LINE, True)
         self.memo.set_prop(PROP_CARET_STOP_UNFOCUSED, True)
+        self.memo.set_prop(PROP_SCROLLSTYLE_HORZ, SCROLLSTYLE_HIDE)
+
 
         self.memo.set_prop(PROP_CARET_VIEW, (-100, 3, False))
         self.memo.set_prop(PROP_CARET_VIEW_RO, self.memo.get_prop(PROP_CARET_VIEW))
@@ -227,15 +229,6 @@ class Command:
 
             self.screen.memo_update()
             self.screen.refresh_caret()
-
-            # remove trailing empty lines
-            self.memo.set_prop(PROP_RO, False)
-            for line in reversed(range(self.memo.get_line_count())):
-                txt = self.memo.get_text_line(line)
-                if txt is not None and txt.strip() == '':
-                    self.memo.replace_lines(line, line, [])
-                else: break
-            self.memo.set_prop(PROP_RO, True)
 
             self.memo.set_prop(PROP_SCROLL_VERT, self.screen.top-1)
 
@@ -425,8 +418,8 @@ class Command:
         self.visible_columns = self.memo.get_prop(PROP_VISIBLE_COLUMNS)
         self.visible_lines   = self.memo.get_prop(PROP_VISIBLE_LINES)
         if self.visible_columns > 0 and self.visible_lines > 0:
-            self.screen.resize(self.visible_lines,self.visible_columns-2)
-            self.send_winsize(self.visible_lines, self.visible_columns-2)
+            self.screen.resize(self.visible_lines,self.visible_columns-3)
+            self.send_winsize(self.visible_lines, self.visible_columns-3)
 
     def form_resize(self, ag, aid='', data=''):
         prop = dlg_proc(self.h_dlg, DLG_PROP_GET)
