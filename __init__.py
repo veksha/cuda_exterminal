@@ -340,7 +340,8 @@ class Command:
                 if 0:pass
                 elif key == keys.VK_ESCAPE:
                     if opt_esc_focuses_editor:
-                        self.memo.cmd(cmds.cmd_FocusEditor)
+                        print("focus")
+                        ed.cmd(cmds.cmd_FocusEditor)
                     else:
                         self.write(ctrl.ESC)
                     return False
