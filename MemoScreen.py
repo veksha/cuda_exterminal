@@ -51,24 +51,24 @@ class MemoScreen(HistoryScreen):
         super(MemoScreen, self).set_title(param)
         dlg_proc(self.h_dlg, DLG_PROP_SET, name='form', prop={'cap': param})
 
-#    def strip_trailing_whitespace(self, tag='', info=''):
-#        self.no_ro()
-#        # TODO: this is bad, i need something better
-#        #self.memo.set_text_all(self.memo.get_text_all().strip())
-#
-#        # remove trailing empty lines
-#        for line in reversed(range(self.memo.get_line_count())):
-#            txt = self.memo.get_text_line(line)
-#            if txt is not None and txt.strip() == '':
-#                self.memo.replace_lines(line, line, [])
-#            else: break
-#
-#        self.ro()
+    def strip_trailing_whitespace(self, tag='', info=''):
+        self.no_ro()
+        # TODO: this is bad, i need something better
+        #self.memo.set_text_all(self.memo.get_text_all().strip())
+
+        # remove trailing empty lines
+        for line in reversed(range(self.memo.get_line_count())):
+            txt = self.memo.get_text_line(line)
+            if txt is not None and txt.strip() == '':
+                self.memo.replace_lines(line, line, [])
+            else: break
+
+        self.ro()
 
     def resize(self, lines=None, columns=None):
         super(MemoScreen, self).resize(lines, columns)
         # try to strip white-space on terminal resize (will work on next resize, unfortunately)
-#        timer_proc(TIMER_START_ONE, self.strip_trailing_whitespace, 200)
+        timer_proc(TIMER_START_ONE, self.strip_trailing_whitespace, 200)
         self.memo.focus() # handy, but can be annoying to some
 
     def refresh_caret(self):
