@@ -82,15 +82,16 @@ class MemoScreen(HistoryScreen):
             self.memo.set_text_line(-1,'')
             chars, text = self.pop_history_line()
             self.memo.set_text_line(self.top-1,text)
-            for x in range(self.columns): # apply colors to history lines
+            for x in range(self.columns): # apply colors to history line
                 self.apply_colors(x, self.top-1, chars)
             self.top += 1
-            #print("top =",self.top)
+            print("top =",self.top)
 
         # draw screen dirty lines
         whitespace_passed = False
         for y_buffer in reversed(sorted(self.dirty)):
             y_memo = y_buffer + self.top - 1
+            #print(y_memo)
             # get text
             text = self.render(y_buffer)
             # try not to process empty lines
@@ -103,8 +104,9 @@ class MemoScreen(HistoryScreen):
             while self.memo.get_line_count()-1 < y_memo:
                 self.memo.set_text_line(-1, '')
 
+            print(y_memo,text)
             self.memo.set_text_line(y_memo, text)
-            # apply colors to dirty lines
+            # apply colors to dirty line
             for x in range(self.columns):
                 self.apply_colors(x, y_memo, self.buffer[y_buffer])
 

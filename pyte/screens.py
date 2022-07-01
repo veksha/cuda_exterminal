@@ -265,6 +265,7 @@ class Screen(object):
            and tabstops should be reset as well, thanks to
            :manpage:`xterm` -- we now know that.
         """
+        print('dirty17')
         self.dirty.update(range(self.lines))
         self.buffer.clear()
         self.margins = None
@@ -313,13 +314,18 @@ class Screen(object):
         if lines == self.lines and columns == self.columns:
             return  # No changes.
 
+        print('resize to',lines)
+
+        print('self.dirty',self.dirty)
         self.dirty.update(range(lines))
+        print('self.dirty updated',self.dirty)
 
         if lines < self.lines:
-            self.save_cursor()
+            #self.save_cursor()
             self.cursor_position(0, 0)
+            print("trying to delete",self.lines - lines,'lines from top')
             self.delete_lines(self.lines - lines)  # Drop from the top.
-            self.restore_cursor()
+            #self.restore_cursor()
 
         if columns < self.columns:
             for line in self.buffer.values():
@@ -375,6 +381,7 @@ class Screen(object):
         if kwargs.get("private"):
             modes = [mode << 5 for mode in modes]
             if mo.DECSCNM in modes:
+                print('dirty1')
                 self.dirty.update(range(self.lines))
 
         self.mode.update(modes)
@@ -415,6 +422,7 @@ class Screen(object):
         if kwargs.get("private"):
             modes = [mode << 5 for mode in modes]
             if mo.DECSCNM in modes:
+                print('dirty2')
                 self.dirty.update(range(self.lines))
 
         self.mode.difference_update(modes)
@@ -490,6 +498,7 @@ class Screen(object):
             # entered.
             if self.cursor.x == self.columns:
                 if mo.DECAWM in self.mode:
+                    print('dirty3')
                     self.dirty.add(self.cursor.y)
                     self.carriage_return()
                     self.linefeed()
@@ -532,6 +541,7 @@ class Screen(object):
                 self.cursor.x = min(self.cursor.x + char_width, self.columns)
 
         self.dirty.add(self.cursor.y)
+        print('dirty4',self.dirty)
 
     def set_title(self, param):
         """Set terminal title.
@@ -558,6 +568,7 @@ class Screen(object):
         top, bottom = self.margins or Margins(0, self.lines - 1)
         if self.cursor.y == bottom:
             # TODO: mark only the lines within margins?
+            print('dirty5')
             self.dirty.update(range(self.lines))
             for y in range(top, bottom):
                 self.buffer[y] = self.buffer[y + 1]
@@ -572,6 +583,7 @@ class Screen(object):
         top, bottom = self.margins or Margins(0, self.lines - 1)
         if self.cursor.y == top:
             # TODO: mark only the lines within margins?
+            print('dirty6')
             self.dirty.update(range(self.lines))
             for y in range(bottom, top, -1):
                 self.buffer[y] = self.buffer[y - 1]
@@ -653,6 +665,7 @@ class Screen(object):
 
         # If cursor is outside scrolling margins it -- do nothin'.
         if top <= self.cursor.y <= bottom:
+            print('dirty7')
             self.dirty.update(range(self.cursor.y, self.lines))
             for y in range(bottom, self.cursor.y - 1, -1):
                 if y + count <= bottom and y in self.buffer:
@@ -674,7 +687,8 @@ class Screen(object):
 
         # If cursor is outside scrolling margins -- do nothin'.
         if top <= self.cursor.y <= bottom:
-            self.dirty.update(range(self.cursor.y, self.lines))
+            #self.dirty.update(range(self.cursor.y, self.lines))
+            print('dirty8',self.dirty)
             for y in range(self.cursor.y, bottom + 1):
                 if y + count <= bottom:
                     if y + count in self.buffer:
@@ -692,6 +706,7 @@ class Screen(object):
 
         :param int count: number of characters to insert.
         """
+        print('dirty9')
         self.dirty.add(self.cursor.y)
 
         count = count or 1
@@ -709,6 +724,7 @@ class Screen(object):
 
         :param int count: number of characters to delete.
         """
+        print('dirty10')
         self.dirty.add(self.cursor.y)
         count = count or 1
 
@@ -733,6 +749,7 @@ class Screen(object):
            a type writer, it starts to make sense. The only way a type
            writer could erase a character is by typing over it.
         """
+        print('dirty11')
         self.dirty.add(self.cursor.y)
         count = count or 1
 
@@ -757,6 +774,7 @@ class Screen(object):
                              eraseable are affected **not implemented**.
         """
         self.dirty.add(self.cursor.y)
+        print('dirty12',self.dirty)
         if how == 0:
             interval = range(self.cursor.x, self.columns)
         elif how == 1:
@@ -798,6 +816,7 @@ class Screen(object):
         elif how == 2 or how == 3:
             interval = range(self.lines)
 
+        print('dirty13')
         self.dirty.update(interval)
         for y in interval:
             line = self.buffer[y]
@@ -964,6 +983,7 @@ class Screen(object):
 
     def alignment_display(self):
         """Fills screen with uppercase E's for screen focus and alignment."""
+        print('dirty14')
         self.dirty.update(range(self.lines))
         for y in range(self.lines):
             for x in range(self.columns):
@@ -1247,6 +1267,7 @@ class HistoryScreen(Screen):
             for y in range(mid - 1, -1, -1):
                 self.buffer[y] = self.history.top.pop()
 
+            print('dirty15')
             self.dirty = set(range(self.lines))
 
     def next_page(self):
@@ -1264,6 +1285,7 @@ class HistoryScreen(Screen):
             for y in range(self.lines - mid, self.lines):
                 self.buffer[y] = self.history.bottom.popleft()
 
+            print('dirty16')
             self.dirty = set(range(self.lines))
 
 
