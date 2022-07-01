@@ -51,48 +51,28 @@ class MemoScreen(HistoryScreen):
         super(MemoScreen, self).set_title(param)
         dlg_proc(self.h_dlg, DLG_PROP_SET, name='form', prop={'cap': param})
 
-    def strip_trailing_whitespace(self):
-        self.no_ro()
-        # TODO: this is bad, i need something better
-        #self.memo.set_text_all(self.memo.get_text_all().strip())
-        self.ro()
+#    def strip_trailing_whitespace(self, tag='', info=''):
+#        self.no_ro()
+#        # TODO: this is bad, i need something better
+#        #self.memo.set_text_all(self.memo.get_text_all().strip())
+#
+#        # remove trailing empty lines
+#        for line in reversed(range(self.memo.get_line_count())):
+#            txt = self.memo.get_text_line(line)
+#            if txt is not None and txt.strip() == '':
+#                self.memo.replace_lines(line, line, [])
+#            else: break
+#
+#        self.ro()
 
     def resize(self, lines=None, columns=None):
         super(MemoScreen, self).resize(lines, columns)
         # try to strip white-space on terminal resize (will work on next resize, unfortunately)
-        self.strip_trailing_whitespace()
+#        timer_proc(TIMER_START_ONE, self.strip_trailing_whitespace, 200)
         self.memo.focus() # handy, but can be annoying to some
-
-    def index(self):
-        super(MemoScreen, self).index()
-
-        self.no_ro()
-        if self.memo.get_line_count()-1 < self.cursor.y:
-            self.memo.set_text_line(-1, '')
-
-        self.ro()
 
     def refresh_caret(self):
         self.memo.set_caret(self.cursor.x, self.cursor.y + self.top - 1, options=CARET_OPTION_NO_SCROLL)
-
-    def cursor_position(self, line=None, column=None):
-        super(MemoScreen, self).cursor_position(line, column)
-
-        if line:
-            self.no_ro()
-            y = self.cursor.y
-            while self.memo.get_line_count() < line:
-                self.memo.set_text_line(-1, '')
-            self.ro()
-
-    def cursor_to_line(self, line=None):
-        super(MemoScreen, self).cursor_to_line(line)
-
-        self.no_ro()
-        y = self.cursor.y
-        while self.memo.get_line_count() < line:
-            self.memo.set_text_line(-1, '')
-        self.ro()
 
     def memo_update(self):
         self.no_ro()
@@ -108,13 +88,21 @@ class MemoScreen(HistoryScreen):
             #print("top =",self.top)
 
         # draw screen dirty lines
-        for y_buffer in self.dirty:
+        whitespace_passed = False
+        for y_buffer in reversed(sorted(self.dirty)):
             y_memo = y_buffer + self.top - 1
+            # get text
+            text = self.render(y_buffer)
+            # try not to process empty lines
+            if not whitespace_passed and text.strip() == '':
+                self.memo.set_text_line(y_memo, '')
+                continue
+            else: whitespace_passed = True
+
             # add newlines as needed
             while self.memo.get_line_count()-1 < y_memo:
                 self.memo.set_text_line(-1, '')
-            # draw text
-            text = self.render(y_buffer)
+
             self.memo.set_text_line(y_memo, text)
             # apply colors to dirty lines
             for x in range(self.columns):
