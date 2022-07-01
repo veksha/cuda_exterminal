@@ -14,6 +14,7 @@ from threading import Thread, Lock
 
 from cudatext import *
 import cudatext_keys as keys
+import cudatext_cmd as cmds
 
 IS_WIN = os.name=='nt'
 ENC = 'utf8'
