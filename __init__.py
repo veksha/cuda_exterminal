@@ -26,6 +26,7 @@ else:
 
 opt_colors = False
 opt_floating = False
+opt_esc_focuses_editor = False
 
 def str_to_bool(s): return s=='1'
 def bool_to_str(v): return '1' if v else '0'
@@ -100,8 +101,10 @@ class Command:
             pass
         global opt_colors
         global opt_floating
+        global opt_esc_focuses_editor
         opt_colors   = str_to_bool(ini_read(ini, 'op', 'colors',   '0'))
         opt_floating = str_to_bool(ini_read(ini, 'op', 'floating', '0'))
+        opt_esc_focuses_editor = str_to_bool(ini_read(ini, 'op', 'esc_focuses_editor', '0'))
 
     def save_ops(self, only_size=False):
         if opt_floating:
@@ -111,6 +114,7 @@ class Command:
             return
         ini_write(ini, 'op', 'colors',   bool_to_str(opt_colors))
         ini_write(ini, 'op', 'floating', bool_to_str(opt_floating))
+        ini_write(ini, 'op', 'esc_focuses_editor', bool_to_str(opt_esc_focuses_editor))
 
     def config(self):
         self.save_ops()
@@ -334,7 +338,10 @@ class Command:
             elif data == '': # # key without combination, this must be the last
                 if 0:pass
                 elif key == keys.VK_ESCAPE:
-                    self.write(ctrl.ESC)
+                    if opt_esc_focuses_editor:
+                        self.memo.cmd(cmds.cmd_FocusEditor)
+                    else:
+                        self.write(ctrl.ESC)
                     return False
                 elif key == keys.VK_ENTER:
                     self.write('\r')
