@@ -94,7 +94,7 @@ class MemoScreen(HistoryScreen):
             #print(y_memo)
             # get text
             text = self.render(y_buffer)
-            # try not to process empty lines
+            # process empty lines but try not to add newlines
             if not whitespace_passed and text.strip() == '':
                 self.memo.set_text_line(y_memo, '')
                 continue

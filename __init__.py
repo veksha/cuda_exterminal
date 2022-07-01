@@ -419,6 +419,7 @@ class Command:
         self.visible_lines   = self.memo.get_prop(PROP_VISIBLE_LINES)
         if self.visible_columns > 0 and self.visible_lines > 0:
             self.screen.resize(self.visible_lines,self.visible_columns-3)
+            self.screen.ensure_vbounds()
             self.send_winsize(self.visible_lines, self.visible_columns-3)
 
     def form_resize(self, ag, aid='', data=''):
