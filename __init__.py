@@ -415,7 +415,6 @@ class Command:
             fcntl.ioctl(self.master, termios.TIOCSWINSZ, winsize)
 
     def terminal_resize(self, tag='', info=''):
-        print('prev self.visible_lines was',self.visible_lines)
         self.visible_columns = self.memo.get_prop(PROP_VISIBLE_COLUMNS)
         self.visible_lines   = self.memo.get_prop(PROP_VISIBLE_LINES)
         if self.visible_columns > 0 and self.visible_lines > 0:
