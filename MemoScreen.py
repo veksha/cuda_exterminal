@@ -104,7 +104,7 @@ class MemoScreen(HistoryScreen):
             while self.memo.get_line_count()-1 < y_memo:
                 self.memo.set_text_line(-1, '')
 
-            print(y_memo,text)
+#            print(y_memo,text)
             self.memo.set_text_line(y_memo, text)
             # apply colors to dirty line
             for x in range(self.columns):
