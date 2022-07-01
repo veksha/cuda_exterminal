@@ -166,6 +166,8 @@ class Command:
 
     def execute_shell(self):
         cwd = os.path.dirname(ed.get_filename())
+        if not os.path.isdir(cwd):
+            cwd = None
         all_env = dict(os.environ)
 
         env = {"TERM":TERM}
