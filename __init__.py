@@ -18,7 +18,7 @@ import cudatext_keys as keys
 IS_WIN = os.name=='nt'
 ENC = 'utf8'
 
-from .MemoScreen import MemoScreen, DebugScreen, ctrl, colmap
+from .memoscreen import MemoScreen, DebugScreen, ctrl, colmap
 if IS_WIN:
     from .conpty.conpty import ConPty
 else:
