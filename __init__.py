@@ -298,6 +298,9 @@ class Command:
                 elif key == keys.VK_BACKSPACE:
                     self.write(ctrl.BS)
                     return False
+                elif key == keys.VK_DELETE:
+                    self.write(ctrl.ESC+'[3;5~')
+                    return False
                 elif key == keys.VK_HOME:
                     self.write(ctrl.ESC+'[1;5H')
                     return False
@@ -324,6 +327,9 @@ class Command:
                     return False
                 elif key == keys.VK_BACKSPACE:
                     self.write(ctrl.ESC+ctrl.BS)
+                    return False
+                elif key == keys.VK_DELETE:
+                    self.write(ctrl.ESC+'[3;3~')
                     return False
             elif data == 's':
                 if 0:pass # shift + key
