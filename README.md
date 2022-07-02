@@ -1,7 +1,7 @@
-# Example Terminal
+# ExTerminal
 
 Advantages over Terminal+ plugin:
- - `Example Terminal` tries to mimic real interactive terminal behaviour.
+ - `ExTerminal` tries to mimic real interactive terminal behaviour.
  That means that you can use apps like nano/vim/htop/python inside it.
  - ...
 
