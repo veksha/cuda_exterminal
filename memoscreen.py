@@ -85,7 +85,7 @@ class MemoScreen(HistoryScreen):
             for x in range(self.columns): # apply colors to history line
                 self.apply_colors(x, self.top-1, chars)
             self.top += 1
-            print("top =",self.top)
+#            print("top =",self.top)
 
         # draw screen dirty lines
         whitespace_passed = False
