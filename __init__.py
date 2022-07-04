@@ -35,7 +35,7 @@ def bool_to_str(v): return '1' if v else '0'
 
 fn_icon = os.path.join(os.path.dirname(__file__), 'terminal.png')
 ini = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
-section = 'cuda_exterminal'
+section = 'exterminal'
 
 
 class Command:
