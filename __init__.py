@@ -105,7 +105,7 @@ class Command:
         global opt_esc_focuses_editor
         opt_colors   = str_to_bool(ini_read(ini, section, 'colors',   '0'))
         opt_floating = str_to_bool(ini_read(ini, section, 'floating', '0'))
-        opt_esc_focuses_editor = str_to_bool(ini_read(ini, section, 'esc_focuses_editor', '1'))
+        opt_esc_focuses_editor = str_to_bool(ini_read(ini, section, 'esc_focuses_editor', '0'))
 
     def save_ops(self, only_size=False):
         if opt_floating:
