@@ -484,6 +484,10 @@ class ControlTh(Thread):
                     return
                 s = self.Cmd.shell.read()
             else:
+                if self.Cmd.shell.poll() is not None:
+                    # shell will be restarted automatically
+                    self.Cmd.shell = None
+                    return
                 s = os.read(self.Cmd.master,2048)
 
             if s:
