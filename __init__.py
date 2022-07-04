@@ -178,6 +178,10 @@ class Command:
         env = {"TERM":TERM}
         all_env.update(env)
 
+        self.memo.set_prop(PROP_RO, False)
+        self.memo.set_text_all('')
+        self.memo.set_prop(PROP_RO, True)
+
         try:
             if IS_WIN:
                 SHELL = SHELL_WIN
@@ -474,6 +478,10 @@ class ControlTh(Thread):
             if self.Cmd.stop_t: return
 
             if IS_WIN:
+                if not self.Cmd.shell.is_alive:
+                    # shell will be restarted automatically
+                    self.Cmd.shell = None
+                    return
                 s = self.Cmd.shell.read()
             else:
                 s = os.read(self.Cmd.master,2048)

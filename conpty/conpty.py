@@ -3,6 +3,7 @@ import sys
 import time
 from .native import *
 from ctypes import *
+from threading import Thread
 
 
 class ConPty():
@@ -27,6 +28,8 @@ class ConPty():
         self._mem = None
         self._env = env
         self._cwd = cwd
+
+        self.is_alive = False
 
         # Initialize
         self.init()
@@ -88,8 +91,12 @@ class ConPty():
         # Check if process is up
         if hr == 0x0:
             print('error: failed to execute ' + self._cmd + ': ' + str(hr))
+        else:
+            self.is_alive = True
 
         WaitForSingleObject(self._lpProcessInformation.hThread, 500)
+        t = ControlTh(self, self._lpProcessInformation.hThread)
+        t.start()
 
     def __initStartupInfoExAttachedToPseudoConsole(self):
         dwAttributeCount = 1
@@ -145,12 +152,14 @@ class ConPty():
                            byref(lpBytesLeftInMessage))
 
         if not hr == 0x0 and lpNumberOfBytesAvail.value > 0:
-            hr = ReadFile(self._cmdOut,             # Handle to the file or i/o device
-                     lpBuffer,                      # Pointer to the buffer that receive the data from the device
-                     MAX_READ,                      # Maximum number of bytes to read
-                     byref(lpNumberOfBytesRead),    # Number of bytes read from the device
-                     NULL_PTR                       # Not used
-                     )
+            try:
+                hr = ReadFile(self._cmdOut,             # Handle to the file or i/o device
+                         lpBuffer,                      # Pointer to the buffer that receive the data from the device
+                         MAX_READ,                      # Maximum number of bytes to read
+                         byref(lpNumberOfBytesRead),    # Number of bytes read from the device
+                         NULL_PTR                       # Not used
+                         )
+            except: pass
             if hr == 0x0:
                 print('failed to read: ' + str(hr))
             return lpBuffer.raw[:lpNumberOfBytesRead.value]
@@ -158,6 +167,8 @@ class ConPty():
             return b''
 
     def write(self, data):
+        if not self.is_alive:
+            return False
         lpBuffer = create_string_buffer(data.encode('utf-8'))
         lpNumberOfBytesWritten = DWORD()
         hr = WriteFile(self._cmdIn,            # Handle to the file or i/o device
@@ -167,3 +178,15 @@ class ConPty():
                   NULL_PTR)                     # Not used
         if hr == 0x0:
             print('failed to write: ' + str(hr))
+
+class ControlTh(Thread):
+    def __init__(self,pty,handle):
+        self.handle = handle
+        self.pty = pty
+        Thread.__init__(self, daemon=True)
+
+    def run(self):
+        WaitForSingleObject(self.handle, INFINITE)
+        self.pty.is_alive = False
+        self.pty.close()
+
