@@ -9,18 +9,28 @@ homepage=https://github.com/veksha/cuda_exterminal
 section=events
 events=on_exit,on_state~
 
-[item2]
-section=commands
-caption=ExTerminal
-method=open
+;[item2]
+;section=commands
+;caption=ExTerminal
+;method=open
 
 [item3]
+section=commands
+caption=ExTerminal\New terminal
+method=new
+
+[item4]
+section=commands
+caption=ExTerminal\Close all terminals
+method=close_all
+
+[item5]
 section=commands
 caption=ExTerminal\Config
 method=config
 menu=o
 
 [bottombar1]
-hint=ExTerminal
-icon={dir}/terminal.png
+hint=ExTerminal 1
+icon={dir}/icons8-console-30.png
 method=open
