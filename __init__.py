@@ -33,8 +33,10 @@ def str_to_bool(s): return s=='1'
 def bool_to_str(v): return '1' if v else '0'
 
 
-ini = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_example_terminal.ini')
 fn_icon = os.path.join(os.path.dirname(__file__), 'terminal.png')
+ini = os.path.join(app_path(APP_DIR_SETTINGS), 'plugins.ini')
+section = 'cuda_exterminal'
+
 
 class Command:
     def __init__(self):
@@ -46,9 +48,7 @@ class Command:
 
         if DEBUG:
             self.dbg_pos = 0
-#            self.dbg_data = '\x1b[?2004h\x1b]0;lubuntu@lubuntu2204: ~/.config/cudatext/py/cuda_example_terminal\x07\x1b[01;32mlubuntu@lubuntu2204\x1b[00m:\x1b[01;34m~/.config/cudatext/py/cuda_example_terminal\x1b[00m$ env\r\n\x1b[?2004l\rSHELL=/bin/bash\r\nQT_ACCESSIBILITY=1\r\nXDG_CONFIG_DIRS=/etc/xdg/xdg-Lubuntu:/etc/xdg:/etc:/usr/share\r\n'
-            #self.dbg_data = '\x1b[1;1H\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\n\x1b[K\x1b[1;205H\x1b[?2004l\x1b[?1006l\x1b[?1002l\x1b[?1001r\x1b[?1l\x1b>\x1b[18;1H\x1b(B\x1b[m\x1b[39;49m\r\x1b[K\r\x1b[?1049l\x1b[23;0;0t\x1b[39;49m\r\n\x1b[?2004h\x1b]0;lubuntu@lubuntu2204: ~/.config/cudatext/py/cuda_example_terminal\x07\x1b[01;32mlubuntu@lubuntu2204\x1b[00m:\x1b[01;34m~/.config/cudatext/py/cuda_example_terminal\x1b[00m$ '
-            self.dbg_data = '\x1b[1;205H\x1b[?2004l\x1b[?1006l\x1b[?1002l\x1b[?1001r\x1b[?1l\x1b>\x1b[18;1H\x1b(B\x1b[m\x1b[39;49m\r\x1b[K\r\x1b[?1049l\x1b[23;0;0t\x1b[39;49m\r\n\x1b[?2004h\x1b]0;lubuntu@lubuntu2204: ~/.config/cudatext/py/cuda_example_terminal\x07\x1b[01;32mlubuntu@lubuntu2204\x1b[00m:\x1b[01;34m~/.config/cudatext/py/cuda_example_terminal\x1b[00m$ '
+            #self.dbg_data = '\x1b[?2004h\x1b]0;lubuntu@lubuntu2204:'
 
         h = dlg_proc(0, DLG_CREATE)
         dlg_proc(h, DLG_PROP_SET, prop={
@@ -96,26 +96,26 @@ class Command:
 
     def load_ops(self):
         try:
-            self.window_width =  int(ini_read(ini, 'op', 'window_width', '1400'))
-            self.window_height = int(ini_read(ini, 'op', 'window_height', '800'))
+            self.window_width =  int(ini_read(ini, section, 'window_width', '1400'))
+            self.window_height = int(ini_read(ini, section, 'window_height', '800'))
         except:
             pass
         global opt_colors
         global opt_floating
         global opt_esc_focuses_editor
-        opt_colors   = str_to_bool(ini_read(ini, 'op', 'colors',   '0'))
-        opt_floating = str_to_bool(ini_read(ini, 'op', 'floating', '0'))
-        opt_esc_focuses_editor = str_to_bool(ini_read(ini, 'op', 'esc_focuses_editor', '0'))
+        opt_colors   = str_to_bool(ini_read(ini, section, 'colors',   '0'))
+        opt_floating = str_to_bool(ini_read(ini, section, 'floating', '0'))
+        opt_esc_focuses_editor = str_to_bool(ini_read(ini, section, 'esc_focuses_editor', '1'))
 
     def save_ops(self, only_size=False):
         if opt_floating:
-            ini_write(ini, 'op', 'window_width', str(self.window_width))
-            ini_write(ini, 'op', 'window_height', str(self.window_height))
+            ini_write(ini, section, 'window_width', str(self.window_width))
+            ini_write(ini, section, 'window_height', str(self.window_height))
         if only_size:
             return
-        ini_write(ini, 'op', 'colors',   bool_to_str(opt_colors))
-        ini_write(ini, 'op', 'floating', bool_to_str(opt_floating))
-        ini_write(ini, 'op', 'esc_focuses_editor', bool_to_str(opt_esc_focuses_editor))
+        ini_write(ini, section, 'colors',   bool_to_str(opt_colors))
+        ini_write(ini, section, 'floating', bool_to_str(opt_floating))
+        ini_write(ini, section, 'esc_focuses_editor', bool_to_str(opt_esc_focuses_editor))
 
     def config(self):
         self.save_ops()
@@ -132,8 +132,8 @@ class Command:
             dlg_proc(self.h_dlg, DLG_SHOW_NONMODAL)
         else:
             #add as dock panel
-            app_proc(PROC_BOTTOMPANEL_ADD_DIALOG, ('Example Terminal', self.h_dlg, fn_icon))
-            app_proc(PROC_BOTTOMPANEL_ACTIVATE, 'Example Terminal')
+            app_proc(PROC_BOTTOMPANEL_ADD_DIALOG, ('ExTerminal', self.h_dlg, fn_icon))
+            app_proc(PROC_BOTTOMPANEL_ACTIVATE, 'ExTerminal')
 
     def on_state(self, ed, state):
         return
