@@ -1,9 +1,9 @@
 [info]
-title=Example Terminal
-desc=(Fill the description)
+title=ExTerminal
+desc=Mimics real interactive terminal behaviour. You can use console apps like nano/vim/etc. Resides in a bottom panel.
 type=cudatext-plugin
-subdir=cuda_example_terminal
-homepage=(Fill the GitHub repo URL)
+subdir=cuda_exterminal
+homepage=https://github.com/veksha/cuda_exterminal
 
 [item1]
 section=events
@@ -11,16 +11,16 @@ events=on_exit,on_state~
 
 [item2]
 section=commands
-caption=Example Terminal
+caption=ExTerminal
 method=open
 
 [item3]
 section=commands
-caption=Example Terminal\Config
+caption=ExTerminal\Config
 method=config
 menu=o
 
 [bottombar1]
-hint=Example Terminal
+hint=ExTerminal
 icon={dir}/terminal.png
 method=open
