@@ -18,8 +18,13 @@ Options:
 - colors: display colors in terminal. Working slow as for now. Disabled by default.
 - esc_focuses_editor: focus editor by pressing ESC key instead of sending it to terminal.
     Disabled by default.
-    Hint: Ctrl+[ key sends ESC code to the terminal, you can use it instead of ESC key.
 
+Questions and Answers:
+    Q: What if I shut down the shell by typing `exit` command?
+    A: It will be restared.
+
+    Q: I have esc_focuses_editor=1 in my config, how can I send ESC key to terminal app in his case?
+    A: Ctrl+[ key sends ESC code to the terminal.
 
 About
 -----
