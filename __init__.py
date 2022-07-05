@@ -10,7 +10,7 @@ IS_WIN = os.name=='nt'
 ENC = 'utf8'
 
 opt_colors = False
-opt_floating = False
+#opt_floating = False
 opt_esc_focuses_editor = False
 
 def str_to_bool(s): return s=='1'
@@ -27,31 +27,29 @@ class Command:
     def __init__(self):
         self.load_ops()
         self.terminal_id = 0
-
-#        self.first_terminal = Terminal(self.window_width, self.window_height, opt_floating, fn_icon, opt_colors)
         self.terminals = []
 
     def load_ops(self):
-        try:
-            self.window_width =  int(ini_read(ini, section, 'window_width', '1400'))
-            self.window_height = int(ini_read(ini, section, 'window_height', '800'))
-        except:
-            pass
+#        try:
+#            self.window_width =  int(ini_read(ini, section, 'window_width', '1400'))
+#            self.window_height = int(ini_read(ini, section, 'window_height', '800'))
+#        except:
+#            pass
         global opt_colors
-        global opt_floating
+#        global opt_floating
         global opt_esc_focuses_editor
         opt_colors   = str_to_bool(ini_read(ini, section, 'colors',   '0'))
-        opt_floating = str_to_bool(ini_read(ini, section, 'floating', '0'))
+#        opt_floating = str_to_bool(ini_read(ini, section, 'floating', '0'))
         opt_esc_focuses_editor = str_to_bool(ini_read(ini, section, 'esc_focuses_editor', '0'))
 
     def save_ops(self, only_size=False):
-        if opt_floating:
-            ini_write(ini, section, 'window_width', str(self.window_width))
-            ini_write(ini, section, 'window_height', str(self.window_height))
-        if only_size:
-            return
+#        if opt_floating:
+#            ini_write(ini, section, 'window_width', str(self.window_width))
+#            ini_write(ini, section, 'window_height', str(self.window_height))
+#        if only_size:
+#            return
         ini_write(ini, section, 'colors',   bool_to_str(opt_colors))
-        ini_write(ini, section, 'floating', bool_to_str(opt_floating))
+#        ini_write(ini, section, 'floating', bool_to_str(opt_floating))
         ini_write(ini, section, 'esc_focuses_editor', bool_to_str(opt_esc_focuses_editor))
 
     def config(self):
@@ -76,8 +74,9 @@ class Command:
 
     def new_terminal_tab(self,focus=False):
         self.terminal_id += 1
-        t = Terminal("ExTerminal {}".format(self.terminal_id), self.window_width, self.window_height,
-            opt_floating, opt_esc_focuses_editor, fn_icon, opt_colors)
+#        t = Terminal("ExTerminal {}".format(self.terminal_id), self.window_width, self.window_height,
+#            opt_floating, opt_esc_focuses_editor, fn_icon, opt_colors)
+        t = Terminal("ExTerminal {}".format(self.terminal_id), 0, 0, 0, opt_esc_focuses_editor, fn_icon, opt_colors)
         t.open()
         if focus:
             t.memo.focus()
