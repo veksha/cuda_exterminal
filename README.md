@@ -5,7 +5,14 @@ Advantages over Terminal+ plugin:
  That means that you can use apps like nano/vim/htop/python inside it.
  - ...
 
+
+# Commands:
+- New terminal
+- Close all terminals
+
 # Configuration file
+
+Menu "Options/ Settings-plugins / ExTerminal"
 
 Setting               | Possible values            | Description
 ----------------------|----------------------------|----------------------------

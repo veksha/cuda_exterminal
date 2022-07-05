@@ -8,6 +8,10 @@ Advantages over Terminal+ plugin:
 To configure, call menu item in the "Options/ Settings-plugins / ExTerminal"
 to edit config file. Options are boolean, values 0/1
 
+Commands:
+- New terminal
+- Close all terminals
+
 Options:
 - shell_*: shell to execute, for example - "bash" or "cmd.exe".
 - colors: display colors in terminal. Working slow as for now. Disabled by default.
