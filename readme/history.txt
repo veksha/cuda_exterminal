@@ -1,2 +1,12 @@
 2022.07.05
++ made shell string configurable (thanks Alexey T.)
+
+2022.07.05
++ added some new features (commands like New Terminal, Close all terminals),
+  fixed some bugs,
+  added readme.txt / history.txt files.
+  (thanks Alexey T.)
+- removed floating mode
+
+2022.07.05
 initial version
