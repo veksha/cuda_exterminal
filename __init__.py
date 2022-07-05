@@ -56,9 +56,6 @@ class Command:
         self.save_ops()
         file_open(ini)
 
-    def on_exit(self, ed_self):
-        pass
-
     def open(self):
         self.new_terminal_tab()
 
@@ -84,9 +81,3 @@ class Command:
         if focus:
             t.memo.focus()
         self.terminals.append(t)
-
-    def on_state(self, ed, state):
-        #if self.h_dlg and state == APPSTATE_THEME_UI:
-        pass
-
-

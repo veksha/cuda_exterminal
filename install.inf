@@ -6,25 +6,16 @@ subdir=cuda_exterminal
 homepage=https://github.com/veksha/cuda_exterminal
 
 [item1]
-section=events
-events=on_exit,on_state~
-
-;[item2]
-;section=commands
-;caption=ExTerminal
-;method=open
-
-[item3]
 section=commands
 caption=ExTerminal\New terminal
 method=new
 
-[item4]
+[item2]
 section=commands
 caption=ExTerminal\Close all terminals
 method=close_all
 
-[item5]
+[item3]
 section=commands
 caption=ExTerminal\Config
 method=config
