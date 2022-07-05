@@ -1,5 +1,5 @@
 SHELL_WIN = 'cmd.exe'
-SHELL_UNIX = '/bin/bash'
+SHELL_UNIX = 'bash'
 TERM = "xterm-256color"
 
 TIMER_INTERVAL = 70
