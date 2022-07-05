@@ -276,6 +276,9 @@ class Terminal:
                 elif key == 191: # '/' slash key
                     self.write('\x1F') # Unit Separator
                     return False
+                elif key == 219: # '[' left square bracket
+                    self.write(ctrl.ESC)
+                    return False
     #            elif 47+144 <= key <= 47+144: # 47+144 = 191 '/' slash key
     #                print('ctrl+key-144',key-144)
     #                self.write(chr(key-144-16))
