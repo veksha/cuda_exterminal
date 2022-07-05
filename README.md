@@ -12,7 +12,7 @@ Advantages over Terminal+ plugin:
 
 # Configuration file
 
-Menu "Options/ Settings-plugins / ExTerminal"
+Menu "Options / Settings-plugins / ExTerminal / Config", \[exterminal\] section.
 
 Setting               | Possible values            | Description
 ----------------------|----------------------------|----------------------------
