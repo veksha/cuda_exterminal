@@ -10,4 +10,5 @@ Advantages over Terminal+ plugin:
 Setting               | Possible values            | Description
 ----------------------|----------------------------|----------------------------
 colors                | 0,1                        | enable terminal colors. (slows down terminal. will be optimized in the future.)
-esc_focuses_editor    | 0,1                        | ESC focuses editor
+esc_focuses_editor    | 0,1                        | focus editor by pressing ESC key instead of sending it to terminal. Disabled by default. <br> Hint: Ctrl+[ key sends ESC code to the terminal, you can use it instead of ESC key.
+
