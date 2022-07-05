@@ -57,7 +57,8 @@ class Command:
         file_open(ini)
 
     def on_exit(self, ed_self):
-        self.save_ops(only_size=True)
+        pass
+        #self.save_ops(only_size=True)
 
     def open(self):
         self.new_terminal_tab()
