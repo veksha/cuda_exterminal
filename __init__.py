@@ -74,6 +74,10 @@ class Command:
         ed.cmd(cmds.cmd_ShowPanelConsole)
 
     def new_terminal_tab(self,focus=False):
+        if self.terminal_id > 4:
+            msg_box("More then 5 terminals is not supported yet.",MB_OK+MB_ICONINFO)
+            return
+        
         self.terminal_id += 1
 #        t = Terminal("ExTerminal {}".format(self.terminal_id), self.window_width, self.window_height,
 #            opt_floating, opt_esc_focuses_editor, fn_icon, opt_colors)
