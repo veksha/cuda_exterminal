@@ -1,5 +1,3 @@
-SHELL_WIN = 'cmd.exe'
-SHELL_UNIX = 'bash'
 TERM = "xterm-256color"
 
 TIMER_INTERVAL = 70
@@ -29,11 +27,8 @@ else:
 
 
 class Terminal:
-    def __init__(self, name, window_width, window_height, floating, esc_focuses_editor, fn_icon, colors):
+    def __init__(self, name, shell_str, esc_focuses_editor, fn_icon, colors):
         self.name = name
-        self.window_width = window_width
-        self.window_height = window_height
-        self.opt_floating = floating
         self.opt_esc_focuses_editor = esc_focuses_editor
         self.fn_icon = fn_icon
         self.opt_colors = colors
@@ -41,6 +36,7 @@ class Terminal:
         self.visible_columns = 0
         self.visible_lines = 0
         self.shell = None
+        self.shell_str = shell_str
 
         if DEBUG:
             self.dbg_pos = 0
@@ -48,7 +44,7 @@ class Terminal:
 
         h = dlg_proc(0, DLG_CREATE)
         dlg_proc(h, DLG_PROP_SET, prop={
-            'name':'form','border': DBORDER_SIZE,'w': self.window_width,'h': self.window_height,
+            'name':'form','border': DBORDER_SIZE,
             'cap':'Console',
             'topmost': True,
             'keypreview': True,
@@ -69,14 +65,14 @@ class Terminal:
         self.h_dlg = h
         self.memo = Editor(dlg_proc(h, DLG_CTL_HANDLE, index=n))
 
-#        self.memo.set_prop(PROP_WRAP, WRAP_ON_WINDOW)
+        #self.memo.set_prop(PROP_WRAP, WRAP_ON_WINDOW)
         self.memo.set_prop(PROP_RO, True)
         self.memo.set_prop(PROP_CARET_VIRTUAL, True)
         self.memo.set_prop(PROP_GUTTER_ALL, False)
-#        self.memo.set_prop(PROP_GUTTER_STATES, False)
+        #self.memo.set_prop(PROP_GUTTER_STATES, False)
         self.memo.set_prop(PROP_MINIMAP, False)
         self.memo.set_prop(PROP_MICROMAP, False)
-#        self.memo.set_prop(PROP_HILITE_CUR_LINE, True)
+        #self.memo.set_prop(PROP_HILITE_CUR_LINE, True)
         self.memo.set_prop(PROP_CARET_STOP_UNFOCUSED, True)
         self.memo.set_prop(PROP_SCROLLSTYLE_HORZ, SCROLLSTYLE_HIDE)
 
@@ -93,13 +89,9 @@ class Terminal:
     def open(self):
         timer_proc(TIMER_START, self.timer_update, TIMER_INTERVAL, tag='')
 
-        if self.opt_floating:
-            dlg_proc(self.h_dlg, DLG_SHOW_NONMODAL)
-        else:
-            #add as dock panel
-            uniq_tag = app_proc(PROC_GET_UNIQUE_TAG, '')
-            app_proc(PROC_BOTTOMPANEL_ADD_DIALOG, (self.name, self.h_dlg, self.fn_icon))
-            app_proc(PROC_BOTTOMPANEL_ACTIVATE, self.name)
+        uniq_tag = app_proc(PROC_GET_UNIQUE_TAG, '')
+        app_proc(PROC_BOTTOMPANEL_ADD_DIALOG, (self.name, self.h_dlg, self.fn_icon))
+        app_proc(PROC_BOTTOMPANEL_ACTIVATE, self.name)
 
     def memo_on_click(self, id_dlg, id_ctl, data='', info=''):
         self.screen.refresh_caret()
@@ -118,7 +110,6 @@ class Terminal:
         self.dstream.attach(d)
 
         self.screen_height = self.visible_lines
-#        self.screen_height = 25
         self.screen_width = self.visible_columns-3
 
         self.screen = MemoScreen(self.memo, self.screen_width, self.screen_height, self.h_dlg, colored=self.opt_colors)
@@ -126,7 +117,7 @@ class Terminal:
         if DEBUG:
             self.screen.debug = self.debug
 
-#        self.screen.set_mode(pyte.modes.LNM)
+        #self.screen.set_mode(pyte.modes.LNM)
 
         self.stream = Stream()
         self.stream.attach(self.screen)
@@ -146,22 +137,20 @@ class Terminal:
 
         try:
             if IS_WIN:
-                SHELL = SHELL_WIN
-                self.shell = ConPty(SHELL, self.screen_width, self.screen_height, env=all_env, cwd=cwd)
+                self.shell = ConPty(self.shell_str, self.screen_width, self.screen_height, env=all_env, cwd=cwd)
             else:
-                SHELL = SHELL_UNIX
                 all_env.update({
                     #"COLORTERM":"truecolor",
                 })
                 self.master, self.slave = pty.openpty()
-                self.shell = Popen([SHELL], preexec_fn=os.setsid, stdin=self.slave, stdout=self.slave, stderr=self.slave,
+                self.shell = Popen([self.shell_str], preexec_fn=os.setsid, stdin=self.slave, stdout=self.slave, stderr=self.slave,
                                     universal_newlines=True, env=all_env, cwd=cwd)
                 self.send_winsize(self.screen_height, self.screen_width)
 
         except Exception as e:
-            print('NOTE:',e,SHELL)
+            print('NOTE:',e,self.shell_str)
             self.memo.set_prop(PROP_RO, False)
-            self.memo.set_text_all('{}\n{}'.format(e,SHELL))
+            self.memo.set_text_all('{}\n{}'.format(e,self.shell_str))
             self.memo.set_prop(PROP_RO, True)
             return False
 
@@ -217,7 +206,7 @@ class Terminal:
         if self.shell:
             if IS_WIN:
                 self.shell.write(text)
-    #            print('writing:',bytes(text,'utf8'))
+                #print('writing:',bytes(text,'utf8'))
             else:
                 os.write(self.master, bytes(text,'utf8'))
 
@@ -244,7 +233,7 @@ class Terminal:
                 dlg_proc(self.h_dlg, DLG_PROP_SET, name='form', prop={'cap': str(self.dbg_pos)})
             return False
         else:
-#            print('key_press',key)
+            #print('key_press',key)
             self.write(chr(key))
         return True
 
@@ -253,7 +242,7 @@ class Terminal:
         key = id_ctl
         if DEBUG:
             pass
-#            print(key)
+            #print(key)
         else:
             if 0:pass
             elif data == 'c':
@@ -279,10 +268,10 @@ class Terminal:
                 elif key == 219: # '[' left square bracket
                     self.write(ctrl.ESC)
                     return False
-    #            elif 47+144 <= key <= 47+144: # 47+144 = 191 '/' slash key
-    #                print('ctrl+key-144',key-144)
-    #                self.write(chr(key-144-16))
-    #                return False
+                #elif 47+144 <= key <= 47+144: # 47+144 = 191 '/' slash key
+                    #print('ctrl+key-144',key-144)
+                    #self.write(chr(key-144-16))
+                    #return False
             elif data == 'a':
                 if 0:pass # alt + key
                 elif 65 <= key <= 90:
@@ -331,8 +320,8 @@ class Terminal:
                     self.write(ctrl.ESC+'OA')
                     return False
                 elif key == keys.VK_DOWN:
-    #                print('markers',len(self.memo.attr(MARKERS_GET)))
-    #                print('markers',self.memo.attr(MARKERS_GET))
+                    #print('markers',len(self.memo.attr(MARKERS_GET)))
+                    #print('markers',self.memo.attr(MARKERS_GET))
                     self.write(ctrl.ESC+'OB')
                     return False
                 elif key == keys.VK_RIGHT:
@@ -408,20 +397,13 @@ class Terminal:
             self.send_winsize(self.visible_lines, self.visible_columns-3)
 
     def form_resize(self, ag, aid='', data=''):
-        prop = dlg_proc(self.h_dlg, DLG_PROP_GET)
-        if prop:
-#            x = prop['x']
-#            y = prop['y']
-            self.window_width  = prop['w']
-            self.window_height = prop['h']
-
         # delay terminal_resize because memo is not resized yet
         timer_proc(TIMER_START_ONE, self.terminal_resize, 200)
 
     def form_close(self, id_dlg, id_ctl, data='', info=''):
         pass
-#        timer_proc(TIMER_STOP, self.timer_update, 20, tag='')
-#        self.stop_t = True
+        #timer_proc(TIMER_STOP, self.timer_update, 20, tag='')
+        #self.stop_t = True
 
     def close(self):
         timer_proc(TIMER_STOP, self.timer_update, 20, tag='')
