@@ -74,6 +74,7 @@ class Command:
             del t
         self.terminals = []
         ed.cmd(cmds.cmd_ShowPanelConsole)
+        ed.focus()
 
     def new_terminal_tab(self,focus=False):
         if self.terminal_id >= TERMINALS_LIMIT:
