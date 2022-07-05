@@ -23,7 +23,7 @@ Questions and Answers:
     Q: What if I shut down the shell by typing `exit` command?
     A: It will be restared.
 
-    Q: I have esc_focuses_editor=1 in my config, how can I send ESC key to terminal app in his case?
+    Q: I have esc_focuses_editor=1 in my config, how can I send ESC key to terminal app in this case?
     A: Ctrl+[ key sends ESC code to the terminal.
 
 About
