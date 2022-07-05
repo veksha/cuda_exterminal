@@ -6,9 +6,6 @@ import cudatext_cmd as cmds
 
 from .terminal import Terminal
 
-IS_WIN = os.name=='nt'
-ENC = 'utf8'
-
 TERMINALS_LIMIT = 4
 
 opt_colors = False
