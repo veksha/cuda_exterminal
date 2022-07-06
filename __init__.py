@@ -71,7 +71,7 @@ class Command:
         ed.focus()
 
     def new_terminal_tab(self,focus=False):
-        if self.terminal_id >= TERMINALS_LIMIT:
+        if len(self.terminals) >= TERMINALS_LIMIT:
             msg_box("More then {} terminals is not supported yet.".format(TERMINALS_LIMIT), MB_OK+MB_ICONINFO)
             return
 
