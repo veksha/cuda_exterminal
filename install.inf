@@ -32,6 +32,11 @@ section=commands
 caption=ExTerminal\Run current file
 method=run_current_file
 
+[item6]
+section=commands
+caption=ExTerminal\Toggle focus terminal/editor
+method=toggle_focus
+
 
 [bottombar1]
 hint=ExTerminal 1

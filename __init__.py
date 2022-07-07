@@ -105,18 +105,27 @@ class Command:
         if len(self.terminals) > 0:
             return self.terminals[-1]
 
-    def activate_terminal(self, t):
+    def show_terminal(self, t):
         app_proc(PROC_BOTTOMPANEL_ACTIVATE, t.name)
 
     def run_selection(self):
         t = self.get_active_terminal()
         if t:
-            self.activate_terminal(t)
+            self.show_terminal(t)
             t.write(ed.get_text_sel()+'\r')
 
     def run_current_file(self):
         t = self.get_active_terminal()
         if t:
-            self.activate_terminal(t)
+            self.show_terminal(t)
             t.write(ed.get_filename()+'\r')
 
+    def toggle_focus(self):
+        t = self.get_active_terminal()
+        if t is None:
+            return
+        if not t.memo.get_prop(PROP_FOCUSED):
+            self.show_terminal(t)
+            t.memo.focus()
+        else:
+            ed.focus()

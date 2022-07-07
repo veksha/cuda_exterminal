@@ -46,7 +46,6 @@ class Terminal:
         dlg_proc(h, DLG_PROP_SET, prop={
             'name':'form','border': DBORDER_SIZE,
             'cap':'Console',
-            'topmost': True,
             'keypreview': True,
             'on_key_press': self.form_key_press,
             'on_key_down': self.form_key_down,
@@ -241,9 +240,14 @@ class Terminal:
             self.write(chr(key))
         return True
 
-
     def form_key_down(self, id_dlg, id_ctl, data='', info=''):
         key = id_ctl
+
+        if is_toggle_focus_hotkey(key, data):
+            #return True # doesn't work?
+            ed.focus()
+            return False
+
         if DEBUG:
             pass
             #print(key)
@@ -450,3 +454,22 @@ class ControlTh(Thread):
                 pass;    DEBUG_READ and print(s)
                 self.add_buf(s)
 
+def get_hotkeys(plugcmd):
+    lcmds   = app_proc(PROC_GET_COMMANDS, '')
+    cfg_keys= [(cmd['key1'], cmd['key2'])
+                for cmd in lcmds
+                if cmd['type']=='plugin' and cmd['p_module']=='cuda_exterminal' and cmd['p_method']==plugcmd][0]
+    return cfg_keys
+
+def is_toggle_focus_hotkey(key, data):
+    str_key =\
+    ('Meta+' if 'm' in data else '')+\
+    ('Ctrl+' if 'c' in data else '')+\
+    ('Alt+' if 'a' in data else '')+\
+    ('Shift+' if 's' in data else '')+\
+    app_proc(PROC_HOTKEY_INT_TO_STR, key)
+
+    for hotkey in get_hotkeys('toggle_focus'):
+        if str_key == hotkey:
+            return True
+    return False
