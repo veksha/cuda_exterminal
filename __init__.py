@@ -119,7 +119,8 @@ class Command:
 
             txt = ed.get_text_sel()
             if txt:
-                t.write(txt+'\r')
+                for line in txt.split('\n'):
+                    t.write(line+'\r')
             else: # if no selection -> run whole line
                 caret = ed.get_carets()[0]
                 x, y = caret[0:2]
