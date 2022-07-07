@@ -77,15 +77,17 @@ class MemoScreen(HistoryScreen):
     def memo_update(self):
         self.no_ro()
 
+        markers = [] # list of tuples: (x, y, fg, bg, bold)
+
         # draw history lines
         while len(self.history.top) > 0:
             self.memo.set_text_line(-1,'')
             chars, text = self.pop_history_line()
             self.memo.set_text_line(self.top-1,text)
             for x in range(self.columns): # apply colors to history line
-                self.apply_colors(x, self.top-1, chars)
+                markers.append(self.get_colors(x, self.top-1, chars))
             self.top += 1
-#            print("top =",self.top)
+            #print("top =",self.top)
 
         # draw screen dirty lines
         whitespace_passed = False
@@ -104,17 +106,21 @@ class MemoScreen(HistoryScreen):
             while self.memo.get_line_count()-1 < y_memo:
                 self.memo.set_text_line(-1, '')
 
-#            print(y_memo,text)
+            #print(y_memo,text)
             self.memo.set_text_line(y_memo, text)
             # apply colors to dirty line
             for x in range(self.columns):
-                self.apply_colors(x, y_memo, self.buffer[y_buffer])
+                markers.append(self.get_colors(x, y_memo, self.buffer[y_buffer]))
+
+        if len(markers) > 0:
+            m = list(zip(*markers))
+            self.memo.attr(MARKERS_ADD_MANY, x=m[0], y=m[1], len=[1]*len(markers), color_font=m[2], color_bg=m[3], font_bold=m[4])
 
         self.dirty.clear()
 
         self.ro()
 
-    def apply_colors(self, x, y, chars):
+    def get_colors(self, x, y, chars):
         if not self.colored:
             return
 
@@ -141,10 +147,13 @@ class MemoScreen(HistoryScreen):
 
         fg, bg = colors
         if reverse: fg, bg = bg, fg
-        try: # try new API, could be missing
-            self.memo.attr(MARKERS_DELETE_BY_POS, x=x, y=y)
-        except: pass
-        self.memo.attr(MARKERS_ADD, x=x, y=y, len=1, color_font=fg, color_bg=bg, font_bold=bold)
+
+        # SLOW
+        #try: # try new API, could be missing
+            #self.memo.attr(MARKERS_DELETE_BY_POS, x=x, y=y)
+        #except: pass
+
+        return (x, y, fg, bg, bold)
 
 
 colmap = { # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
