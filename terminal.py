@@ -468,12 +468,13 @@ def get_hotkeys(plugcmd):
 def is_toggle_focus_hotkey(key, data):
     str_key =\
     ('Meta+' if 'm' in data else '')+\
+    ('Shift+' if 's' in data else '')+\
     ('Ctrl+' if 'c' in data else '')+\
     ('Alt+' if 'a' in data else '')+\
-    ('Shift+' if 's' in data else '')+\
     app_proc(PROC_HOTKEY_INT_TO_STR, key)
 
     for hotkey in get_hotkeys('toggle_focus'):
+        print(str_key, hotkey)
         if str_key == hotkey:
             return True
     return False
