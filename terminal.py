@@ -51,6 +51,7 @@ class Terminal:
             'on_key_down': self.form_key_down,
             'on_resize': self.form_resize,
             'on_close': self.form_close,
+            'on_show': self.form_show,
         })
         n = dlg_proc(h, DLG_CTL_ADD, 'editor')
         dlg_proc(h, DLG_CTL_PROP_SET, index=n, prop={
@@ -413,12 +414,15 @@ class Terminal:
         #timer_proc(TIMER_STOP, self.timer_update, 20, tag='')
         #self.stop_t = True
 
+    def form_show(self, id_dlg, id_ctl, data='', info=''):
+        if self.form_show_callback:
+            self.form_show_callback(self)
+
     def close(self):
         timer_proc(TIMER_STOP, self.timer_update, 20, tag='')
         self.stop_t = True
         app_proc(PROC_BOTTOMPANEL_REMOVE, self.name)
         dlg_proc(self.h_dlg, DLG_FREE)
-
 
 
 class ControlTh(Thread):

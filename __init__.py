@@ -32,6 +32,7 @@ class Command:
         self.load_ops()
         self.terminal_id = 0
         self.terminals = []
+        self.last_touched = None
 
     def load_ops(self):
         self.shell_unix = ini_read(ini, section, 'shell_unix', SHELL_UNIX)
@@ -77,10 +78,14 @@ class Command:
 
         self.terminal_id += 1
         t = Terminal("ExTerminal {}".format(self.terminal_id), self.shell_str, opt_esc_focuses_editor, fn_icon, opt_colors)
+        t.form_show_callback = self.form_show_callback
         t.open()
         if focus:
             t.memo.focus()
         self.terminals.append(t)
+
+    def form_show_callback(self, t):
+        self.last_touched = t
 
     def ensure_at_least_one_terminal(self, focus=False):
         # ensure there is at least one terminal
@@ -101,9 +106,8 @@ class Command:
             if dlg_proc(t.h_dlg, DLG_PROP_GET)['vis']:
                 return t
 
-        # or return last one. TODO: return last touched?
-        if len(self.terminals) > 0:
-            return self.terminals[-1]
+        # if terminals are hidden
+        return self.last_touched
 
     def show_terminal(self, t):
         app_proc(PROC_BOTTOMPANEL_ACTIVATE, t.name)
