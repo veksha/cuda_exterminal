@@ -155,6 +155,7 @@ class Terminal:
             self.memo.set_prop(PROP_RO, False)
             self.memo.set_text_all('{}\n{}'.format(e,self.shell_str))
             self.memo.set_prop(PROP_RO, True)
+            self.shell = False # flag "False" means: error while executing shell
             return False
 
         self.stop_t = False

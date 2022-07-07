@@ -7,19 +7,26 @@ homepage=https://github.com/veksha/cuda_exterminal
 
 [item1]
 section=commands
+caption=ExTerminal\Config
+method=config
+menu=o
+
+
+[item2]
+section=commands
 caption=ExTerminal\New terminal
 method=new
 
-[item2]
+[item3]
 section=commands
 caption=ExTerminal\Close all terminals
 method=close_all
 
-[item3]
+[item4]
 section=commands
-caption=ExTerminal\Config
-method=config
-menu=o
+caption=ExTerminal\Run selection from editor
+method=run_selection
+
 
 [bottombar1]
 hint=ExTerminal 1

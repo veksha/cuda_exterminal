@@ -81,3 +81,36 @@ class Command:
         if focus:
             t.memo.focus()
         self.terminals.append(t)
+
+    def ensure_at_least_one_terminal(self):
+        # ensure there is at least one terminal
+        if len(self.terminals) == 0:
+            self.new_terminal_tab(focus=False)
+            # wait for shell
+            while self.terminals[0].shell is None:
+                app_idle()
+                if self.terminals[0].shell == False:
+                    # error while executing shell, break from loop
+                    break
+
+    def get_active_terminal(self):
+        self.ensure_at_least_one_terminal()
+
+        # return visible one
+        for t in self.terminals:
+            if dlg_proc(t.h_dlg, DLG_PROP_GET)['vis']:
+                return t
+
+        # or return last one. TODO: return last touched?
+        if len(self.terminals) > 0:
+            return self.terminals[-1]
+
+    def activate_terminal(self, t):
+        app_proc(PROC_BOTTOMPANEL_ACTIVATE, t.name)
+
+    def run_selection(self):
+        t = self.get_active_terminal()
+        if t:
+            self.activate_terminal(t)
+            t.write(ed.get_text_sel()+'\r')
+
