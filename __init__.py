@@ -114,3 +114,9 @@ class Command:
             self.activate_terminal(t)
             t.write(ed.get_text_sel()+'\r')
 
+    def run_current_file(self):
+        t = self.get_active_terminal()
+        if t:
+            self.activate_terminal(t)
+            t.write(ed.get_filename()+'\r')
+

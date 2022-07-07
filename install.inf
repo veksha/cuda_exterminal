@@ -27,6 +27,11 @@ section=commands
 caption=ExTerminal\Run selection from editor
 method=run_selection
 
+[item5]
+section=commands
+caption=ExTerminal\Run current file
+method=run_current_file
+
 
 [bottombar1]
 hint=ExTerminal 1
