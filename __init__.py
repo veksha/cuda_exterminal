@@ -112,7 +112,19 @@ class Command:
         t = self.get_active_terminal()
         if t:
             self.show_terminal(t)
-            t.write(ed.get_text_sel()+'\r')
+
+            txt = ed.get_text_sel()
+            if txt:
+                t.write(txt+'\r')
+            else: # if no selection -> run whole line
+                caret = ed.get_carets()[0]
+                x, y = caret[0:2]
+                txt = ed.get_text_line(y).rstrip('\n')
+                if txt:
+                    t.write(txt+'\r')
+                # move caret down
+                if y+1 < ed.get_line_count():
+                    ed.set_caret(x, y+1)
 
     def run_current_file(self):
         t = self.get_active_terminal()
