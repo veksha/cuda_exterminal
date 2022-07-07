@@ -134,7 +134,7 @@ class Command:
         t = self.get_active_terminal()
         if t:
             self.show_terminal(t)
-            t.write(ed.get_filename()+'\r')
+            t.write('"'+ed.get_filename()+'"\r')
 
     def toggle_focus(self):
         if len(self.terminals) == 0:
