@@ -9,6 +9,9 @@ Advantages over Terminal+ plugin:
 # Commands:
 - New terminal
 - Close all terminals
+- Run selection from editor
+- Run current file
+- Toggle focus terminal/editor
 
 # Configuration file
 
