@@ -12,6 +12,9 @@ Options that are boolean must have value 0 or 1.
 Commands:
 - New terminal
 - Close all terminals
+- Run selection from editor
+- Run current file
+- Toggle focus terminal/editor
 
 Options:
 - shell_*: shell to execute, for example - "bash" or "cmd.exe".
@@ -20,7 +23,7 @@ Options:
     Disabled by default.
 
 Questions and Answers:
-    Q: What if I shut down the shell by typing `exit` command?
+    Q: What if I will shut down the shell by typing `exit` command?
     A: It will be restared.
 
     Q: I have esc_focuses_editor=1 in my config, how can I send ESC key to terminal app in this case?

@@ -1,3 +1,13 @@
+2022.07.07
++ add: command "Run selection from editor"
++ add: command "Run current file"
++ add: command "Toggle focus terminal/editor"
+  (thanks Miroslav Matas)
+
+2022.07.06
+- fix: terminal limit variable was comparing to wrong value
++ add: empty gutter
+
 2022.07.05
 + made shell string configurable (thanks Alexey T.)
 
