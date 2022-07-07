@@ -82,10 +82,10 @@ class Command:
             t.memo.focus()
         self.terminals.append(t)
 
-    def ensure_at_least_one_terminal(self):
+    def ensure_at_least_one_terminal(self, focus=False):
         # ensure there is at least one terminal
         if len(self.terminals) == 0:
-            self.new_terminal_tab(focus=False)
+            self.new_terminal_tab(focus=focus)
             # wait for shell
             while self.terminals[0].shell is None:
                 app_idle()
@@ -133,6 +133,10 @@ class Command:
             t.write(ed.get_filename()+'\r')
 
     def toggle_focus(self):
+        if len(self.terminals) == 0:
+            self.ensure_at_least_one_terminal(focus=True)
+            return
+
         t = self.get_active_terminal()
         if t is None:
             return
