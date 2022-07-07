@@ -132,10 +132,12 @@ class Command:
                     ed.set_caret(x, y+1)
 
     def run_current_file(self):
-        t = self.get_active_terminal()
-        if t:
-            self.show_terminal(t)
-            t.write('"'+ed.get_filename()+'"\r')
+        fn = ed.get_filename()
+        if fn:
+            t = self.get_active_terminal()
+            if t:
+                self.show_terminal(t)
+                t.write('"'+fn+'"\r')
 
     def toggle_focus(self):
         if len(self.terminals) == 0:
