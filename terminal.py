@@ -460,9 +460,12 @@ class ControlTh(Thread):
 
 def get_hotkeys(plugcmd):
     lcmds   = app_proc(PROC_GET_COMMANDS, '')
-    cfg_keys= [(cmd['key1'], cmd['key2'])
-                for cmd in lcmds
-                if cmd['type']=='plugin' and cmd['p_module']=='cuda_exterminal' and cmd['p_method']==plugcmd][0]
+    try:
+        cfg_keys= [(cmd['key1'], cmd['key2'])
+                    for cmd in lcmds
+                    if cmd['type']=='plugin' and cmd['p_module']=='cuda_exterminal' and cmd['p_method']==plugcmd][0]
+    except:
+        return None
     return cfg_keys
 
 def is_toggle_focus_hotkey(key, data):
