@@ -474,7 +474,6 @@ def is_toggle_focus_hotkey(key, data):
     app_proc(PROC_HOTKEY_INT_TO_STR, key)
 
     for hotkey in get_hotkeys('toggle_focus'):
-        print(str_key, hotkey)
         if str_key == hotkey:
             return True
     return False
