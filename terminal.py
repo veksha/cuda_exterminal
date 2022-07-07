@@ -465,7 +465,7 @@ def get_hotkeys(plugcmd):
                     for cmd in lcmds
                     if cmd['type']=='plugin' and cmd['p_module']=='cuda_exterminal' and cmd['p_method']==plugcmd][0]
     except:
-        return None
+        return ()
     return cfg_keys
 
 def is_toggle_focus_hotkey(key, data):
