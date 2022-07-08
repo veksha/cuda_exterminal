@@ -86,7 +86,9 @@ class MemoScreen(HistoryScreen):
             chars, text = self.pop_history_line()
             self.memo.set_text_line(self.top-1,text)
             for x in range(self.columns): # apply colors to history line
-                markers.append(self.get_colors(x, self.top-1, chars))
+                colors = self.get_colors(x, self.top-1, chars)
+                if colors:
+                    markers.append(colors)
             self.top += 1
             #print("top =",self.top)
 
@@ -111,7 +113,9 @@ class MemoScreen(HistoryScreen):
             self.memo.set_text_line(y_memo, text)
             # apply colors to dirty line
             for x in range(self.columns):
-                markers.append(self.get_colors(x, y_memo, self.buffer[y_buffer]))
+                colors = self.get_colors(x, y_memo, self.buffer[y_buffer])
+                if colors:
+                    markers.append(colors)
 
         if len(markers) > 0 and app_api_version() >= '1.0.425':
             m = list(zip(*markers))
