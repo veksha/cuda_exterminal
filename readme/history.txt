@@ -1,8 +1,14 @@
+2022.07.08
++ add: terminal header
++ add: using new API call: MARKERS_SET_DUPS=0, disallow marker duplications. (thanks Alexey T.)
+
 2022.07.07
++ add: using new API call: MARKERS_ADD_MANY (thanks Alexey T.)
 + add: command "Run selection from editor"
 + add: command "Run current file"
 + add: command "Toggle focus terminal/editor"
-  (thanks Miroslav Matas)
+- fix: bugs of commands above
+  (thanks Miroslav Matas and Alexey T.)
 
 2022.07.06
 - fix: terminal limit variable was comparing to wrong value
