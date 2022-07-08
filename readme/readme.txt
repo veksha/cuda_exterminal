@@ -18,7 +18,7 @@ Commands:
 
 Options:
 - shell_*: shell to execute, for example - "bash" or "cmd.exe".
-- colors: display colors in terminal. Working slow as for now. Disabled by default.
+- colors: display colors in terminal. Disabled by default.
 - esc_focuses_editor: focus editor by pressing ESC key instead of sending it to terminal.
     Disabled by default.
 

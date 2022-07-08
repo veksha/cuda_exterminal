@@ -106,7 +106,6 @@ class Terminal:
     def open(self):
         timer_proc(TIMER_START, self.timer_update, TIMER_INTERVAL, tag='')
 
-        uniq_tag = app_proc(PROC_GET_UNIQUE_TAG, '')
         app_proc(PROC_BOTTOMPANEL_ADD_DIALOG, (self.name, self.h_dlg, self.fn_icon))
         app_proc(PROC_BOTTOMPANEL_ACTIVATE, self.name)
 
