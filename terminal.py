@@ -52,14 +52,25 @@ class Terminal:
             'on_resize': self.form_resize,
             'on_close': self.form_close,
             'on_show': self.form_show,
+            'color': app_proc(PROC_THEME_UI_DICT_GET, '')['TabBg']['color'],
+        })
+        n = dlg_proc(h, DLG_CTL_ADD, 'label')
+        dlg_proc(h, DLG_CTL_PROP_SET, index=n, prop={
+            'name': 'header',
+            'font_size': 10,
+            'cap': 'ExTerminal',
+            'align': ALIGN_TOP,
+            #'sp_a': 1,
+            'sp_l': 3,
+            'font_color': app_proc(PROC_THEME_UI_DICT_GET, '')['TabFont']['color'],
         })
         n = dlg_proc(h, DLG_CTL_ADD, 'editor')
         dlg_proc(h, DLG_CTL_PROP_SET, index=n, prop={
             'name': 'memo',
-            'a_r': ('', ']'), 'a_b': ('', ']'),
             'font_size': 11,
             'on_click': self.memo_on_click,
             'on_click_link': self.memo_on_click_link,
+            'align': ALIGN_CLIENT,
         })
 
         self.h_dlg = h

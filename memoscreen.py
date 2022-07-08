@@ -50,6 +50,7 @@ class MemoScreen(HistoryScreen):
     def set_title(self, param):
         super(MemoScreen, self).set_title(param)
         dlg_proc(self.h_dlg, DLG_PROP_SET, name='form', prop={'cap': param})
+        dlg_proc(self.h_dlg, DLG_CTL_PROP_SET, name='header', prop={'cap': param})
 
     def strip_trailing_whitespace(self, tag='', info=''):
         self.no_ro()
@@ -115,6 +116,11 @@ class MemoScreen(HistoryScreen):
         if len(markers) > 0 and app_api_version() >= '1.0.425':
             m = list(zip(*markers))
             self.memo.attr(MARKERS_ADD_MANY, x=m[0], y=m[1], len=[1]*len(markers), color_font=m[2], color_bg=m[3], font_bold=m[4])
+
+        # show marker count in terminal header
+        #dlg_proc(self.h_dlg, DLG_CTL_PROP_SET, name='header', prop={
+            #'cap': '{} markers'.format(len(self.memo.attr(MARKERS_GET)))
+        #})
 
         self.dirty.clear()
 
