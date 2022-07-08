@@ -79,6 +79,9 @@ class Terminal:
         self.memo.set_prop(PROP_CARET_STOP_UNFOCUSED, True)
         self.memo.set_prop(PROP_SCROLLSTYLE_HORZ, SCROLLSTYLE_HIDE)
 
+        # new api!
+        if app_api_version() >= '1.0.425':
+            self.memo.attr(MARKERS_SET_DUPS, tag=0) # 0 means disallow marker dups
 
         self.memo.set_prop(PROP_CARET_VIEW, (-100, 3, False))
         self.memo.set_prop(PROP_CARET_VIEW_RO, self.memo.get_prop(PROP_CARET_VIEW))
