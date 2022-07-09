@@ -1,4 +1,5 @@
 2022.07.08
+- fix: #28 - exception when colors=0 (thanks Alexey T.)
 + add: terminal header
 + add: using new API call: MARKERS_SET_DUPS=0, disallow marker duplications. (thanks Alexey T.)
 
