@@ -1,3 +1,6 @@
+2022.07.09
++ add: added context menu to bottom panel icons (thanks Alexey T. for new API)
+
 2022.07.08
 - fix: #28 - exception when colors=0 (thanks Alexey T.)
 + add: terminal header
