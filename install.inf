@@ -5,6 +5,10 @@ type=cudatext-plugin
 subdir=cuda_exterminal
 homepage=https://github.com/veksha/cuda_exterminal
 
+[item0]
+section=events
+events=on_sidebar_popup
+
 [item1]
 section=commands
 caption=ExTerminal\Config

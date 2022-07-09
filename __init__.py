@@ -152,3 +152,20 @@ class Command:
             t.memo.focus()
         else:
             ed.focus()
+
+    def close_terminal(self, caption):
+        for t in self.terminals[:]:
+            if t.name == caption:
+                t.close()
+                self.terminals.remove(t)
+                ed.cmd(cmds.cmd_HideBottomPanel)
+                return
+
+    def on_sidebar_popup(self, ed_self, caption):
+        if 'ExTerminal' in caption:
+            self.h_menu = menu_proc(0, MENU_CREATE)
+            menu_proc(self.h_menu, MENU_ADD, caption="New terminal", command=self.new )
+            menu_proc(self.h_menu, MENU_ADD, caption="Close terminal", command=lambda: self.close_terminal(caption) )
+            menu_proc(self.h_menu, MENU_SHOW)
+
+
