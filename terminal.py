@@ -19,6 +19,8 @@ import cudatext_cmd as cmds
 IS_WIN = os.name=='nt'
 ENC = 'utf8'
 
+api_ver = app_api_version()
+
 from .memoscreen import MemoScreen, DebugScreen, ctrl, colmap, Stream
 if IS_WIN:
     from .conpty.conpty import ConPty
@@ -91,7 +93,7 @@ class Terminal:
         self.memo.set_prop(PROP_SCROLLSTYLE_HORZ, SCROLLSTYLE_HIDE)
 
         # new api!
-        if app_api_version() >= '1.0.425':
+        if api_ver >= '1.0.425':
             self.memo.attr(MARKERS_SET_DUPS, tag=0) # 0 means disallow marker dups
 
         self.memo.set_prop(PROP_CARET_VIEW, (-100, 3, False))
