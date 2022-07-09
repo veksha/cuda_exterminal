@@ -117,7 +117,7 @@ class MemoScreen(HistoryScreen):
                 if colors:
                     markers.append(colors)
 
-        if len(markers) > 0 and app_api_version() >= '1.0.425':
+        if markers and app_api_version() >= '1.0.425':
             m = list(zip(*markers))
             self.memo.attr(MARKERS_ADD_MANY, x=m[0], y=m[1], len=[1]*len(markers), color_font=m[2], color_bg=m[3], font_bold=m[4])
 
