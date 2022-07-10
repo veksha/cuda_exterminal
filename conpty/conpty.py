@@ -67,6 +67,7 @@ class ConPty():
         # Initialize startup info
         self._startupInfoEx = STARTUPINFOEX()
         self._startupInfoEx.StartupInfo.cb = sizeof(STARTUPINFOEX)
+        self._startupInfoEx.StartupInfo.dwFlags = STARTF_USESTDHANDLES # without it pseudoconsole will not work under debugger.
         self.__initStartupInfoExAttachedToPseudoConsole()
         self._lpProcessInformation = PROCESS_INFORMATION()
 
