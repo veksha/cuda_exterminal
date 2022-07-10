@@ -33,6 +33,7 @@ class Command:
         self.terminal_id = 0
         self.terminals = []
         self.last_touched = None
+        self.h_menu = None
 
     def load_ops(self):
         self.shell_unix = ini_read(ini, section, 'shell_unix', SHELL_UNIX)
@@ -163,7 +164,10 @@ class Command:
 
     def on_sidebar_popup(self, ed_self, caption):
         if 'ExTerminal' in caption:
-            self.h_menu = menu_proc(0, MENU_CREATE)
+            if self.h_menu is None:
+                self.h_menu = menu_proc(0, MENU_CREATE)
+            else:
+                menu_proc(self.h_menu, MENU_CLEAR)
             menu_proc(self.h_menu, MENU_ADD, caption="New terminal", command=self.new )
             menu_proc(self.h_menu, MENU_ADD, caption="Close terminal", command=lambda: self.close_terminal(caption) )
             menu_proc(self.h_menu, MENU_SHOW)
