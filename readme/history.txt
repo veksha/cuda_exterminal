@@ -1,3 +1,6 @@
+2022.07.10
++ add: added new option show_caption (thanks Alexey T.)
+
 2022.07.09
 + add: added context menu to bottom panel icons (thanks Alexey T. for new API)
 

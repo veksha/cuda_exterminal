@@ -29,11 +29,12 @@ else:
 
 
 class Terminal:
-    def __init__(self, name, shell_str, esc_focuses_editor, fn_icon, colors):
+    def __init__(self, name, shell_str, esc_focuses_editor, fn_icon, colors, show_caption):
         self.name = name
         self.opt_esc_focuses_editor = esc_focuses_editor
         self.fn_icon = fn_icon
         self.opt_colors = colors
+        self.opt_show_caption = show_caption
 
         self.visible_columns = 0
         self.visible_lines = 0
@@ -65,6 +66,7 @@ class Terminal:
             #'sp_a': 1,
             'sp_l': 3,
             'font_color': app_proc(PROC_THEME_UI_DICT_GET, '')['TabFont']['color'],
+            'vis': self.opt_show_caption,
         })
         n = dlg_proc(h, DLG_CTL_ADD, 'editor')
         dlg_proc(h, DLG_CTL_PROP_SET, index=n, prop={

@@ -17,6 +17,7 @@ IS_MAC = sys.platform=='darwin'
 
 opt_colors = False
 opt_esc_focuses_editor = False
+opt_show_caption = False
 
 def str_to_bool(s): return s=='1'
 def bool_to_str(v): return '1' if v else '0'
@@ -44,8 +45,10 @@ class Command:
 
         global opt_colors
         global opt_esc_focuses_editor
+        global opt_show_caption
         opt_colors   = str_to_bool(ini_read(ini, section, 'colors',   '0'))
         opt_esc_focuses_editor = str_to_bool(ini_read(ini, section, 'esc_focuses_editor', '0'))
+        opt_show_caption = str_to_bool(ini_read(ini, section, 'show_caption', '0'))
 
     def save_ops(self, only_size=False):
         ini_write(ini, section, 'shell_windows', self.shell_win)
@@ -53,6 +56,7 @@ class Command:
         ini_write(ini, section, 'shell_macos', self.shell_mac)
         ini_write(ini, section, 'colors',   bool_to_str(opt_colors))
         ini_write(ini, section, 'esc_focuses_editor', bool_to_str(opt_esc_focuses_editor))
+        ini_write(ini, section, 'show_caption', bool_to_str(opt_show_caption))
 
     def config(self):
         self.save_ops()
@@ -78,7 +82,8 @@ class Command:
             return
 
         self.terminal_id += 1
-        t = Terminal("ExTerminal {}".format(self.terminal_id), self.shell_str, opt_esc_focuses_editor, fn_icon, opt_colors)
+        t = Terminal("ExTerminal {}".format(self.terminal_id),
+            self.shell_str, opt_esc_focuses_editor, fn_icon, opt_colors, opt_show_caption)
         t.form_show_callback = self.form_show_callback
         t.open()
         if focus:
