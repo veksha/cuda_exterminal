@@ -118,9 +118,14 @@ class MemoScreen(HistoryScreen):
                 if colors:
                     markers.append(colors)
 
+        # add markers
         if markers and api_ver >= '1.0.425':
             m = list(zip(*markers))
             self.memo.attr(MARKERS_ADD_MANY, x=m[0], y=m[1], len=[1]*len(markers), color_font=m[2], color_bg=m[3], font_bold=m[4])
+
+        # URL markers
+        # we must wait 10ms for url markers, they are not present yet
+        timer_proc(TIMER_START_ONE, self.apply_url_markers, 10)
 
         # show marker count in terminal header
         #dlg_proc(self.h_dlg, DLG_CTL_PROP_SET, name='header', prop={
@@ -128,8 +133,14 @@ class MemoScreen(HistoryScreen):
         #})
 
         self.dirty.clear()
-
         self.ro()
+
+    def apply_url_markers(self, tag='', info=''):
+        url_markers = [m for m in self.memo.attr(MARKERS_GET) if m[0] == -100] # url markers have tag -100
+        for m in url_markers:
+            for x in range(m[1], m[1]+m[3]): # sadly only non-multiline URLs will be colored/underlined
+                self.memo.attr(MARKERS_ADD, 0, x, m[2], 1, m[4], m[5], m[6], border_down=m[12])
+
 
     def get_colors(self, x, y, chars):
         if not self.colored:
