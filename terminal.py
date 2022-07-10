@@ -116,8 +116,11 @@ class Terminal:
         self.memo.action(EDACTION_UPDATE)
 
     def memo_on_click_link(self, id_dlg, id_ctl, data='', info=''):
-        import webbrowser
-        webbrowser.open(data) # crash?!
+        if IS_WIN:
+            Popen(['start',data], shell=True)
+        else:
+            import webbrowser
+            webbrowser.open(data)
 
     def debug(self, *args, **kwargs):
         print('Unrecognized sequence:',*args)
