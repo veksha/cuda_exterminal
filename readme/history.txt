@@ -1,5 +1,8 @@
 2022.07.10
 + add: added new option show_caption (thanks Alexey T.)
++ add: added URL markers
+- fix: #30 - Leak of sidebar pop up menus (thanks Alexey T.)
+- fix: crash on link opening on Windows
 
 2022.07.09
 + add: added context menu to bottom panel icons (thanks Alexey T. for new API)
