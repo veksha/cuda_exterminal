@@ -1,3 +1,6 @@
+2022.07.11
+- fix: terminal lose focus under some circumstances.
+
 2022.07.10
 + add: added new option show_caption (thanks Alexey T.)
 + add: added URL markers
