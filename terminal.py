@@ -474,7 +474,8 @@ class ControlTh(Thread):
                     # shell will be restarted automatically
                     self.Cmd.shell = None
                     return
-                s = os.read(self.Cmd.master,2048)
+                s = os.read(self.Cmd.master,8)
+                # TODO: asciinema play https://asciinema.org/a/439918
 
             if s:
                 pass;    DEBUG_READ and print(s)
