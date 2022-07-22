@@ -116,6 +116,12 @@ class Terminal:
         app_proc(PROC_BOTTOMPANEL_ACTIVATE, self.name)
 
     def memo_on_click(self, id_dlg, id_ctl, data='', info=''):
+        text = self.memo.get_text_sel()
+        if text:
+            text = '\n'.join([line.rstrip() for line in text.splitlines()])
+            app_proc(PROC_SET_CLIP, text)
+            msg_status("Text was copied to clipboard!")
+        
         self.screen.refresh_caret()
         self.memo.action(EDACTION_UPDATE)
 
