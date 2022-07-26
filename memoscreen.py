@@ -71,7 +71,10 @@ class MemoScreen(HistoryScreen):
         super(MemoScreen, self).resize(lines, columns)
         # try to strip white-space on terminal resize (will work on next resize, unfortunately)
         timer_proc(TIMER_START_ONE, self.strip_trailing_whitespace, 200)
-        self.memo.focus() # handy, but can be annoying to some
+        
+        # commented out: see https://github.com/veksha/cuda_exterminal/issues/35
+        # only for qt5 version this gives focus to terminal on app start (if window is maximized)
+        #self.memo.focus() # handy, but can be annoying to some
 
     def refresh_caret(self):
         self.memo.set_caret(self.cursor.x, self.cursor.y + self.top - 1, options=CARET_OPTION_NO_SCROLL)
