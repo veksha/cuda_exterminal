@@ -16,6 +16,10 @@ from cudatext import *
 import cudatext_keys as keys
 import cudatext_cmd as cmds
 
+from cudax_lib import get_translation
+_ = get_translation(__file__)  # I18N
+
+
 IS_WIN = os.name=='nt'
 ENC = 'utf8'
 
@@ -48,7 +52,7 @@ class Terminal:
         h = dlg_proc(0, DLG_CREATE)
         dlg_proc(h, DLG_PROP_SET, prop={
             'name':'form','border': DBORDER_SIZE,
-            'cap':'Console',
+            'cap':_('Console'),
             'keypreview': True,
             'on_key_press': self.form_key_press,
             'on_key_down': self.form_key_down,
@@ -61,7 +65,7 @@ class Terminal:
         dlg_proc(h, DLG_CTL_PROP_SET, index=n, prop={
             'name': 'header',
             'font_size': 10,
-            'cap': 'ExTerminal',
+            'cap': _('ExTerminal'),
             'align': ALIGN_TOP,
             #'sp_a': 1,
             'sp_l': 3,
@@ -120,7 +124,7 @@ class Terminal:
         if text:
             text = '\n'.join([line.rstrip() for line in text.splitlines()])
             app_proc(PROC_SET_CLIP, text)
-            msg_status("Text was copied to clipboard!")
+            msg_status(_("Text was copied to clipboard!"))
         
         self.screen.refresh_caret()
         self.memo.action(EDACTION_UPDATE)
@@ -133,7 +137,7 @@ class Terminal:
             webbrowser.open(data)
 
     def debug(self, *args, **kwargs):
-        print('Unrecognized sequence:',*args)
+        print(_('Unrecognized sequence:'),*args)
 
     def create_screen(self):
         d = DebugScreen(sys.stdout)

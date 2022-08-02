@@ -6,6 +6,10 @@ import cudatext_cmd as cmds
 
 from .terminal import Terminal
 
+from cudax_lib import get_translation
+_ = get_translation(__file__)  # I18N
+
+
 TERMINALS_LIMIT = 4
 
 SHELL_UNIX = 'bash'
@@ -78,7 +82,7 @@ class Command:
 
     def new_terminal_tab(self,focus=False):
         if len(self.terminals) >= TERMINALS_LIMIT:
-            msg_box("More then {} terminals is not supported yet.".format(TERMINALS_LIMIT), MB_OK+MB_ICONINFO)
+            msg_box(_("More than {} terminals is not supported yet.").format(TERMINALS_LIMIT), MB_OK+MB_ICONINFO)
             return
 
         self.terminal_id += 1
@@ -173,8 +177,8 @@ class Command:
                 self.h_menu = menu_proc(0, MENU_CREATE)
             else:
                 menu_proc(self.h_menu, MENU_CLEAR)
-            menu_proc(self.h_menu, MENU_ADD, caption="New terminal", command=self.new )
-            menu_proc(self.h_menu, MENU_ADD, caption="Close terminal", command=lambda: self.close_terminal(caption) )
+            menu_proc(self.h_menu, MENU_ADD, caption=_("New terminal"), command=self.new )
+            menu_proc(self.h_menu, MENU_ADD, caption=_("Close terminal"), command=lambda: self.close_terminal(caption) )
             menu_proc(self.h_menu, MENU_SHOW)
 
 
