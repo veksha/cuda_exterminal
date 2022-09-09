@@ -84,6 +84,7 @@ class Terminal:
         self.h_dlg = h
         self.memo = Editor(dlg_proc(h, DLG_CTL_HANDLE, index=n))
 
+        self.memo.set_prop(PROP_UNDO_LIMIT, 0) # disable UNDO info
         #self.memo.set_prop(PROP_WRAP, WRAP_ON_WINDOW)
         self.memo.set_prop(PROP_RO, True)
         self.memo.set_prop(PROP_CARET_VIRTUAL, True)
