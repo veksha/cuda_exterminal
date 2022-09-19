@@ -1,3 +1,7 @@
+2022.09.19
++ add: added new option `themed` (use theme colors) (thanks eltonfabricio10)
+- fix: disabled showing of unprinted chars (thanks eltonfabricio10)
+
 2022.07.11
 - fix: terminal lose focus under some circumstances.
 

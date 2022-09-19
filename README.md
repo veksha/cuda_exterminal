@@ -23,3 +23,4 @@ shell_*               | string                     | shell to execute, for examp
 colors                | 0,1                        | enable terminal colors. (slows down terminal. will be optimized in the future.)
 esc_focuses_editor    | 0,1                        | focus editor by pressing ESC key instead of sending it to terminal. Disabled by default. <br> Hint: Ctrl+[ key sends ESC code to the terminal, you can use it instead of ESC key
 show_caption          | 0,1                        | show terminal header (title)
+themed                | 0,1                        | use theme colors

@@ -22,6 +22,7 @@ IS_MAC = sys.platform=='darwin'
 opt_colors = False
 opt_esc_focuses_editor = False
 opt_show_caption = False
+opt_themed = False
 
 def str_to_bool(s): return s=='1'
 def bool_to_str(v): return '1' if v else '0'
@@ -50,9 +51,11 @@ class Command:
         global opt_colors
         global opt_esc_focuses_editor
         global opt_show_caption
+        global opt_themed
         opt_colors   = str_to_bool(ini_read(ini, section, 'colors',   '0'))
         opt_esc_focuses_editor = str_to_bool(ini_read(ini, section, 'esc_focuses_editor', '0'))
         opt_show_caption = str_to_bool(ini_read(ini, section, 'show_caption', '0'))
+        opt_themed = str_to_bool(ini_read(ini, section, 'themed', '0'))
 
     def save_ops(self, only_size=False):
         ini_write(ini, section, 'shell_windows', self.shell_win)
@@ -61,6 +64,7 @@ class Command:
         ini_write(ini, section, 'colors',   bool_to_str(opt_colors))
         ini_write(ini, section, 'esc_focuses_editor', bool_to_str(opt_esc_focuses_editor))
         ini_write(ini, section, 'show_caption', bool_to_str(opt_show_caption))
+        ini_write(ini, section, 'themed', bool_to_str(opt_themed))
 
     def config(self):
         self.save_ops()
@@ -84,6 +88,7 @@ class Command:
         if len(self.terminals) >= TERMINALS_LIMIT:
             msg_box(_("More than {} terminals is not supported yet.").format(TERMINALS_LIMIT), MB_OK+MB_ICONINFO)
             return
+        Terminal.themed = opt_themed
 
         self.terminal_id += 1
         t = Terminal("ExTerminal {}".format(self.terminal_id),
@@ -181,4 +186,8 @@ class Command:
             menu_proc(self.h_menu, MENU_ADD, caption=_("Close terminal"), command=lambda: self.close_terminal(caption) )
             menu_proc(self.h_menu, MENU_SHOW)
 
-
+    def on_state(self, ed_self, state):
+        if state == APPSTATE_THEME_UI:
+            Terminal.themed = opt_themed
+            for t in self.terminals:
+                t.set_theme_colors()

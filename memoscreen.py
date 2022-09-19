@@ -181,7 +181,7 @@ class MemoScreen(HistoryScreen):
         return (x, y, fg, bg, bold)
 
 
-colmap = { # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+colmap_default = { # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
     'black': 0x36342e,
     'red': 0x0000cc,
     'green': 0x69a4e,
@@ -203,3 +203,4 @@ colmap = { # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
     'background': 0x240a30,
     'foreground': 0xcfd7d3,
 }
+colmap = colmap_default

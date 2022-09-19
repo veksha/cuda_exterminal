@@ -22,6 +22,7 @@ Options:
 - esc_focuses_editor: focus editor by pressing ESC key instead of sending it to terminal.
     Disabled by default.
 - show_caption: show terminal header (title). Disabled by default.
+- themed: use theme colors. Disabled by default.
 
 Questions and Answers:
     Q: What if I will shut down the shell by typing `exit` command?

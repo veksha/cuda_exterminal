@@ -33,6 +33,7 @@ else:
 
 
 class Terminal:
+    themed = False
     def __init__(self, name, shell_str, esc_focuses_editor, fn_icon, colors, show_caption):
         self.name = name
         self.opt_esc_focuses_editor = esc_focuses_editor
@@ -43,6 +44,7 @@ class Terminal:
         self.visible_columns = 0
         self.visible_lines = 0
         self.shell = None
+        self.screen = None
         self.shell_str = shell_str
 
         if DEBUG:
@@ -109,11 +111,26 @@ class Terminal:
         self.memo.set_prop(PROP_CARET_VIEW, (-100, 3, False))
         self.memo.set_prop(PROP_CARET_VIEW_RO, self.memo.get_prop(PROP_CARET_VIEW))
 
-        self.memo.set_prop(PROP_THEMED, False)
+        self.set_theme_colors()
+
+    def set_theme_colors(self):
+        self.memo.set_prop(PROP_THEMED, Terminal.themed)
+        if Terminal.themed:
+            theme_colors = app_proc(PROC_THEME_UI_DICT_GET, '')
+            # header color
+            dlg_proc(self.h_dlg, DLG_PROP_SET, name='form', prop={ 'color': theme_colors['TabBg']['color'] } )
+            dlg_proc(self.h_dlg, DLG_CTL_PROP_SET, name='header', prop={ 'font_color': theme_colors['TabFont']['color'] } )
+            # memo color
+            theme_textfont = theme_colors[COLOR_ID_TextFont]['color']
+            theme_textbg   = theme_colors[COLOR_ID_TextBg]['color']
+            colmap['foreground'] = theme_textfont
+            colmap['background'] = theme_textbg
+            #self.memo.action(EDACTION_APPLY_THEME)
         self.memo.set_prop(PROP_COLOR, (COLOR_ID_TextFont, colmap['foreground']))
         self.memo.set_prop(PROP_COLOR, (COLOR_ID_TextBg,   colmap['background']))
-        #if not opt_colors:
-            #self.memo.action(EDACTION_APPLY_THEME)
+        if self.screen:
+            self.screen.dirty = set(range(self.screen.lines))
+            self.screen.memo_update()
 
     def open(self):
         timer_proc(TIMER_START, self.timer_update, TIMER_INTERVAL, tag='')
