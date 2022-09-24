@@ -1,3 +1,6 @@
+2022.09.25
++ add: font size is now the same as in Console/Output (thanks eltonfabricio10)
+
 2022.09.19
 + add: added new option `themed` (use theme colors) (thanks eltonfabricio10)
 - fix: disabled showing of unprinted chars (thanks eltonfabricio10)
