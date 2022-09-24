@@ -34,6 +34,7 @@ else:
 
 class Terminal:
     themed = False
+    font_size = 11
     def __init__(self, name, shell_str, esc_focuses_editor, fn_icon, colors, show_caption):
         self.name = name
         self.opt_esc_focuses_editor = esc_focuses_editor
@@ -77,7 +78,7 @@ class Terminal:
         n = dlg_proc(h, DLG_CTL_ADD, 'editor')
         dlg_proc(h, DLG_CTL_PROP_SET, index=n, prop={
             'name': 'memo',
-            'font_size': 11,
+            'font_size': Terminal.font_size,
             'on_click': self.memo_on_click,
             'on_click_link': self.memo_on_click_link,
             'align': ALIGN_CLIENT,

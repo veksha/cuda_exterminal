@@ -6,7 +6,7 @@ import cudatext_cmd as cmds
 
 from .terminal import Terminal
 
-from cudax_lib import get_translation
+from cudax_lib import get_translation,get_opt
 _ = get_translation(__file__)  # I18N
 
 
@@ -89,6 +89,7 @@ class Command:
             msg_box(_("More than {} terminals is not supported yet.").format(TERMINALS_LIMIT), MB_OK+MB_ICONINFO)
             return
         Terminal.themed = opt_themed
+        self.set_font_size()
 
         self.terminal_id += 1
         t = Terminal("ExTerminal {}".format(self.terminal_id),
@@ -187,7 +188,13 @@ class Command:
             menu_proc(self.h_menu, MENU_SHOW)
 
     def on_state(self, ed_self, state):
-        if state == APPSTATE_THEME_UI:
+        if state == APPSTATE_CONFIG_REREAD:
+            self.set_font_size()
+        elif state == APPSTATE_THEME_UI:
             Terminal.themed = opt_themed
             for t in self.terminals:
                 t.set_theme_colors()
+
+    def set_font_size(self):
+        _os_suffix = app_proc(PROC_GET_OS_SUFFIX, '')
+        Terminal.font_size = get_opt('font_size'+_os_suffix)
