@@ -184,7 +184,9 @@ class Command:
             else:
                 menu_proc(self.h_menu, MENU_CLEAR)
             menu_proc(self.h_menu, MENU_ADD, caption=_("New terminal"), command=self.new )
-            menu_proc(self.h_menu, MENU_ADD, caption=_("Close terminal"), command=lambda: self.close_terminal(caption) )
+            h_menu_close = menu_proc(self.h_menu, MENU_ADD, caption=_("Close terminal"), command=lambda: self.close_terminal(caption) )
+            if not self.terminals:
+                menu_proc(h_menu_close, MENU_SET_ENABLED, command=False)
             menu_proc(self.h_menu, MENU_SHOW)
 
     def on_state(self, ed_self, state):
