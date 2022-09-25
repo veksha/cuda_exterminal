@@ -47,6 +47,7 @@ class Terminal:
         self.shell = None
         self.screen = None
         self.shell_str = shell_str
+        theme_colors = app_proc(PROC_THEME_UI_DICT_GET, '')
 
         if DEBUG:
             self.dbg_pos = 0
@@ -62,7 +63,7 @@ class Terminal:
             'on_resize': self.form_resize,
             'on_close': self.form_close,
             'on_show': self.form_show,
-            'color': app_proc(PROC_THEME_UI_DICT_GET, '')['TabBg']['color'],
+            'color': theme_colors['TabBg']['color'],
         })
         n = dlg_proc(h, DLG_CTL_ADD, 'label')
         dlg_proc(h, DLG_CTL_PROP_SET, index=n, prop={
@@ -72,7 +73,7 @@ class Terminal:
             'align': ALIGN_TOP,
             #'sp_a': 1,
             'sp_l': 3,
-            'font_color': app_proc(PROC_THEME_UI_DICT_GET, '')['TabFont']['color'],
+            'font_color': theme_colors['TabFont']['color'],
             'vis': self.opt_show_caption,
         })
         n = dlg_proc(h, DLG_CTL_ADD, 'editor')
