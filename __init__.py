@@ -4,7 +4,18 @@ from cudatext import *
 import cudatext_keys as keys
 import cudatext_cmd as cmds
 
-from .terminal import Terminal
+os_ok = True
+if os.name=='nt':
+    import platform
+    s = platform.version().split('.')
+    if int(s[0])<10:
+        msg_box('ExTerminal does not support Windows older than 10', MB_OK+MB_ICONERROR)
+        os_ok = False
+
+if os_ok:
+    from .terminal import Terminal
+else:
+    Terminal = None
 
 from cudax_lib import get_translation,get_opt
 _ = get_translation(__file__)  # I18N
@@ -71,6 +82,8 @@ class Command:
         file_open(ini)
 
     def open(self):
+        if not os_ok:
+            return
         self.new_terminal_tab()
 
     def new(self):
