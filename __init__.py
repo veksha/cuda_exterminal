@@ -4,11 +4,16 @@ from cudatext import *
 import cudatext_keys as keys
 import cudatext_cmd as cmds
 
+MIN_WINDOWS_VER = '10.0.17763'
 os_ok = True
 if os.name=='nt':
     import platform
-    s = platform.version().split('.')
-    if int(s[0])<10:
+    def versiontuple(v):
+        return tuple(map(int, (v.split(".")))) if v and '.' in v else (0,0,0)
+    version_need = versiontuple(MIN_WINDOWS_VER)    
+    version_our = versiontuple(platform.version())
+
+    if version_our < version_need:
         msg_box('ExTerminal does not support Windows older than 10', MB_OK+MB_ICONERROR)
         os_ok = False
 
