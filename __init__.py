@@ -4,6 +4,9 @@ from cudatext import *
 import cudatext_keys as keys
 import cudatext_cmd as cmds
 
+from cudax_lib import get_translation,get_opt
+_ = get_translation(__file__)  # I18N
+
 MIN_WINDOWS_VER = '10.0.17763'
 os_ok = True
 if os.name=='nt':
@@ -14,16 +17,13 @@ if os.name=='nt':
     version_our = versiontuple(platform.version())
 
     if version_our < version_need:
-        msg_box('ExTerminal does not support Windows older than 10', MB_OK+MB_ICONERROR)
+        msg_box(_('ExTerminal does not support Windows older than 10'), MB_OK+MB_ICONERROR)
         os_ok = False
 
 if os_ok:
     from .terminal import Terminal
 else:
     Terminal = None
-
-from cudax_lib import get_translation,get_opt
-_ = get_translation(__file__)  # I18N
 
 
 TERMINALS_LIMIT = 4
