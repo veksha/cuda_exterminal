@@ -1,5 +1,6 @@
 2022.10.03
-- fix: "clear" command did not clear all lines
+- fix: "clear" command did not clear all lines (thanks eltonfabricio10)
+- fix: terminal shows 'margin' line like main editor (thanks Alexey T.)
 
 2022.09.25
 + add: font size is now the same as in Console/Output (thanks eltonfabricio10)
