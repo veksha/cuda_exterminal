@@ -14,7 +14,7 @@ def BGRtoRGB(hex_string):
     return int(rev(hex_string),16)
 
 class MemoScreen(HistoryScreen):
-    def __init__(self, memo, columns, lines, h_dlg, colored=0):
+    def __init__(self, memo: Editor, columns, lines, h_dlg, colored=0):
         self.memo = memo
         self.h_dlg = h_dlg
         self.no_ro = partial(self.memo.set_prop, PROP_RO, False)
@@ -47,6 +47,17 @@ class MemoScreen(HistoryScreen):
         chars = self.history.top.popleft()
         text = ''.join( (chars[char].data for char in range(self.columns)) )
         return chars, text
+        
+    def erase_in_display(self, how=0, *args, **kwargs):
+        """Overloaded to reset history state."""
+        super(MemoScreen, self).erase_in_display(how, *args, **kwargs)
+
+        if how == 3:
+            self._reset_history()
+            self.top = 1
+            self.no_ro()
+            self.memo.set_text_all('')
+            self.ro()
 
     def set_title(self, param):
         super(MemoScreen, self).set_title(param)
