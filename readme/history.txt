@@ -1,4 +1,4 @@
-2022.10.03
+2022.10.30
 - fix: "clear" command did not clear all lines (thanks eltonfabricio10)
 - fix: terminal shows 'margin' line like main editor (thanks Alexey T.)
 
