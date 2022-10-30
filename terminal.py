@@ -103,6 +103,7 @@ class Terminal:
         self.memo.set_prop(PROP_CARET_STOP_UNFOCUSED, True)
         self.memo.set_prop(PROP_SCROLLSTYLE_HORZ, SCROLLSTYLE_HIDE)
         self.memo.set_prop(PROP_UNPRINTED_SHOW, False)
+        self.memo.set_prop(PROP_MARGIN, 2000)
         
         # new api!
         if api_ver >= '1.0.425':
