@@ -58,6 +58,7 @@ class MemoScreen(HistoryScreen):
             self.no_ro()
             self.memo.set_text_all('')
             self.ro()
+            self.cursor_position(0, 0)
 
     def set_title(self, param):
         super(MemoScreen, self).set_title(param)
