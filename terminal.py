@@ -153,7 +153,7 @@ class Terminal:
 
     def memo_on_click_link(self, id_dlg, id_ctl, data='', info=''):
         if IS_WIN:
-            Popen(['start',data], shell=True)
+            Popen(['start', '', data], shell=True)
         else:
             import webbrowser
             webbrowser.open(data)
