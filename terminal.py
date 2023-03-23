@@ -380,18 +380,16 @@ class Terminal:
                 elif key == keys.VK_BACKSPACE:
                     self.write(ctrl.DEL)
                 elif key == keys.VK_UP:
-                    self.write(ctrl.ESC+'OA')
+                    self.write(ctrl.ESC+'[A')
                     return False
                 elif key == keys.VK_DOWN:
-                    #print('markers',len(self.memo.attr(MARKERS_GET)))
-                    #print('markers',self.memo.attr(MARKERS_GET))
-                    self.write(ctrl.ESC+'OB')
+                    self.write(ctrl.ESC+'[B')
                     return False
                 elif key == keys.VK_RIGHT:
-                    self.write(ctrl.ESC+'OC')
+                    self.write(ctrl.ESC+'[C')
                     return False
                 elif key == keys.VK_LEFT:
-                    self.write(ctrl.ESC+'OD')
+                    self.write(ctrl.ESC+'[D')
                     return False
                 elif key == keys.VK_PAGEUP:
                     self.write(ctrl.ESC+'[5~')
