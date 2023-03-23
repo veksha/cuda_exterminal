@@ -512,6 +512,8 @@ class ControlTh(Thread):
             if s:
                 pass;    DEBUG_READ and print(s)
                 self.add_buf(s)
+            else:
+                sleep(0.05) # reduces CPU usage while doing nothing!
 
 def get_hotkeys(plugcmd):
     lcmds   = app_proc(PROC_GET_COMMANDS, '')
