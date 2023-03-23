@@ -85,6 +85,12 @@ class Command:
     def config(self):
         self.save_ops()
         file_open(ini)
+        lines = [ed.get_text_line(i) for i in range(ed.get_line_count())]
+        try:
+            index = lines.index('['+section+']')
+            ed.set_caret(0, index)
+        except:
+            pass
 
     def open(self):
         if not os_ok:
