@@ -31,6 +31,32 @@ if IS_WIN:
 else:
     import pty, array, termios, fcntl
 
+key_map = {
+    keys.VK_ENTER: '\r',
+    keys.VK_TAB: '\t',
+    keys.VK_DELETE: ctrl.ESC+'[3~',
+    keys.VK_BACKSPACE: ctrl.DEL,
+    keys.VK_UP: ctrl.ESC+'[A',
+    keys.VK_DOWN: ctrl.ESC+'[B',
+    keys.VK_RIGHT: ctrl.ESC+'[C',
+    keys.VK_LEFT: ctrl.ESC+'[D',
+    keys.VK_PAGEUP: ctrl.ESC+'[5~',
+    keys.VK_PAGEDOWN: ctrl.ESC+'[6~',
+    keys.VK_HOME: ctrl.ESC+'OH',
+    keys.VK_END: ctrl.ESC+'OF',
+    keys.VK_F1: ctrl.ESC+'OP',
+    keys.VK_F2: ctrl.ESC+'OQ',
+    keys.VK_F3: ctrl.ESC+'OR',
+    keys.VK_F4: ctrl.ESC+'OS',
+    keys.VK_F5: ctrl.ESC+'[15~',
+    keys.VK_F6: ctrl.ESC+'[17~',
+    keys.VK_F7: ctrl.ESC+'[18~',
+    keys.VK_F8: ctrl.ESC+'[19~',
+    keys.VK_F9: ctrl.ESC+'[20~',
+    keys.VK_F10: ctrl.ESC+'[21~',
+    keys.VK_F11: ctrl.ESC+'[23~',
+    keys.VK_F12: ctrl.ESC+'[24~'
+}
 
 class Terminal:
     themed = False
@@ -364,80 +390,14 @@ class Terminal:
                     return False
 
             elif data == '': # # key without combination, this must be the last
-                if 0:pass
-                elif key == keys.VK_ESCAPE:
+                if key == keys.VK_ESCAPE:
                     if self.opt_esc_focuses_editor:
                         ed.cmd(cmds.cmd_FocusEditor)
                     else:
                         self.write(ctrl.ESC)
                     return False
-                elif key == keys.VK_ENTER:
-                    self.write('\r')
-                elif key == keys.VK_TAB:
-                    self.write('\t')
-                elif key == keys.VK_DELETE:
-                    self.write(ctrl.ESC+'[3~')
-                elif key == keys.VK_BACKSPACE:
-                    self.write(ctrl.DEL)
-                elif key == keys.VK_UP:
-                    self.write(ctrl.ESC+'[A')
-                    return False
-                elif key == keys.VK_DOWN:
-                    self.write(ctrl.ESC+'[B')
-                    return False
-                elif key == keys.VK_RIGHT:
-                    self.write(ctrl.ESC+'[C')
-                    return False
-                elif key == keys.VK_LEFT:
-                    self.write(ctrl.ESC+'[D')
-                    return False
-                elif key == keys.VK_PAGEUP:
-                    self.write(ctrl.ESC+'[5~')
-                    return False
-                elif key == keys.VK_PAGEDOWN:
-                    self.write(ctrl.ESC+'[6~')
-                    return False
-                elif key == keys.VK_HOME:
-                    self.write(ctrl.ESC+'OH')
-                    return False
-                elif key == keys.VK_END:
-                    self.write(ctrl.ESC+'OF')
-                    return False
-                elif key == keys.VK_F1:
-                    self.write(ctrl.ESC+'OP')
-                    return False
-                elif key == keys.VK_F2:
-                    self.write(ctrl.ESC+'OQ')
-                    return False
-                elif key == keys.VK_F3:
-                    self.write(ctrl.ESC+'OR')
-                    return False
-                elif key == keys.VK_F4:
-                    self.write(ctrl.ESC+'OS')
-                    return False
-                elif key == keys.VK_F5:
-                    self.write(ctrl.ESC+'[15~')
-                    return False
-                elif key == keys.VK_F6:
-                    self.write(ctrl.ESC+'[17~')
-                    return False
-                elif key == keys.VK_F7:
-                    self.write(ctrl.ESC+'[18~')
-                    return False
-                elif key == keys.VK_F8:
-                    self.write(ctrl.ESC+'[19~')
-                    return False
-                elif key == keys.VK_F9:
-                    self.write(ctrl.ESC+'[20~')
-                    return False
-                elif key == keys.VK_F10:
-                    self.write(ctrl.ESC+'[21~')
-                    return False
-                elif key == keys.VK_F11:
-                    self.write(ctrl.ESC+'[23~')
-                    return False
-                elif key == keys.VK_F12:
-                    self.write(ctrl.ESC+'[24~')
+                elif key in key_map:
+                    self.write(key_map.get(key, ''))
                     return False
         return True
 
