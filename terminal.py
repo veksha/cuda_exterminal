@@ -339,6 +339,12 @@ class Terminal:
                 elif 65 <= key <= 90:
                     self.write(chr(key-64))
                     return False
+                elif key == keys.VK_LEFT:
+                    self.write(ctrl.ESC+'[1;5D')
+                    return False
+                elif key == keys.VK_RIGHT:
+                    self.write(ctrl.ESC+'[1;5C')
+                    return False
                 elif key == keys.VK_BACKSPACE:
                     self.write(ctrl.BS)
                     return False
