@@ -383,6 +383,9 @@ class Terminal:
                 elif key == keys.VK_INSERT:
                     self.write(app_proc(PROC_GET_CLIP, ''))
                     return False
+                elif key == keys.VK_TAB:
+                    self.write(ctrl.ESC+'[Z')
+                    return False
             elif len(data) == 2 and 'c' in data and 'a' in data:
                 if 0:pass # ctrl + alt + key
                 elif key == keys.VK_PAGEUP:
