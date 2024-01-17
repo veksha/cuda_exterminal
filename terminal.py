@@ -8,7 +8,7 @@ DEBUG_READ = 0
 
 import os
 import sys
-from time import sleep
+from time import perf_counter, sleep
 from subprocess import Popen
 from threading import Thread, Lock
 
@@ -25,7 +25,7 @@ ENC = 'utf8'
 
 api_ver = app_api_version()
 
-from .memoscreen import MemoScreen, DebugScreen, ctrl, colmap, Stream
+from .memoscreen import MemoScreen, DebugScreen, ctrl, colmap, Stream, plot
 if IS_WIN:
     from .conpty.conpty import ConPty
 else:
@@ -74,6 +74,11 @@ class Terminal:
         self.screen = None
         self.shell_str = shell_str
         theme_colors = app_proc(PROC_THEME_UI_DICT_GET, '')
+        
+        self.measured_timer_time = perf_counter()*1000
+        self.timer_took_too_long = False
+        self.measured_line_time = perf_counter()*1000
+        self.time_data = []
 
         if DEBUG:
             self.dbg_pos = 0
@@ -159,7 +164,7 @@ class Terminal:
         self.memo.set_prop(PROP_COLOR, (COLOR_ID_TextBg,   colmap['background']))
         if self.screen:
             self.screen.dirty = set(range(self.screen.lines))
-            self.screen.memo_update()
+            self.memo_update()
 
     def open(self):
         timer_proc(TIMER_START, self.timer_update, TIMER_INTERVAL, tag='')
@@ -195,7 +200,11 @@ class Terminal:
         self.screen_height = self.visible_lines
         self.screen_width = self.visible_columns-3
 
-        self.screen = MemoScreen(self.memo, self.screen_width, self.screen_height, self.h_dlg, colored=self.opt_colors)
+        def draw_callback(text):
+            pass
+            self.memo_update()
+        
+        self.screen = MemoScreen(self.memo, self.screen_width, self.screen_height, self.h_dlg, self.opt_colors, draw_callback)
         self.screen.write_process_input = self.write
         if DEBUG:
             self.screen.debug = self.debug
@@ -248,7 +257,85 @@ class Terminal:
         self.CtlTh.start()
         return True
 
+    def memo_update(self):
+        self.memo.set_prop(PROP_RO, False)
+
+        markers = [] # list of tuples: (x, y, fg, bg, bold)
+
+        # draw history lines
+        #print("self.history.top:", len(self.history.top))
+        #while len(self.history.top) > 0:
+        #    chars, text = self.pop_history_line()
+        #    
+        #    # == use this only if there is no "memo_update" call in "draw" func above
+        #    # == and history size is configured > 1
+        #    # == (this is obsolete/backup)
+        #    #self.memo.set_text_line(-1,'')
+        #    #self.memo.set_text_line(self.top-1,text)
+        #    #for x in range(self.columns): # apply colors to history line
+        #    #    colors = self.get_colors(x, self.top-1, chars)
+        #    #    if colors:
+        #    #        markers.append(colors)
+        #    
+        #    self.top += 1
+
+        # draw screen dirty lines
+        whitespace_passed = False
+        #memo_line_count = self.memo.get_line_count()
+        #print("self.screen.top:", self.screen.top)
+        #print("memo_line_count:", memo_line_count)
+        #
+        #if self.screen.top > memo_line_count - self.screen.lines:
+        #    self.screen.top = memo_line_count
+            
+        for y_buffer in reversed(sorted(self.screen.dirty)):
+            y_memo = y_buffer + self.screen.top - 1
+            #print(y_memo)
+            # get text
+            text = self.screen.render(y_buffer)
+            # process empty lines but try not to add newlines
+            if not whitespace_passed and text.strip() == '':
+                self.memo.set_text_line(y_memo, '')
+                continue
+            else: whitespace_passed = True
+
+            # add newlines as needed
+            while self.memo.get_line_count()-1 < y_memo:
+                self.memo.set_text_line(-1, '')
+
+            #print(y_memo,text)
+            self.memo.set_text_line(y_memo, text)
+            # apply colors to dirty line
+            for x in range(self.screen.columns):
+                colors = self.screen.get_colors(x, y_memo, self.screen.buffer[y_buffer])
+                if colors:
+                    markers.append(colors)
+
+        # add markers
+        if markers and api_ver >= '1.0.425':
+            m = list(zip(*markers))
+            self.memo.attr(MARKERS_ADD_MANY, x=m[0], y=m[1], len=[1]*len(markers), color_font=m[2], color_bg=m[3], font_bold=m[4])
+        
+        # URL markers
+        # we must wait 10ms for url markers, they are not present yet
+        timer_proc(TIMER_START_ONE, self.screen.apply_url_markers, 10)
+        
+        # show marker count in terminal header
+        #dlg_proc(self.h_dlg, DLG_CTL_PROP_SET, name='header', prop={
+            #'cap': '{} markers'.format(len(self.memo.attr(MARKERS_GET)))
+        #})
+
+        self.screen.dirty.clear()
+        self.memo.set_prop(PROP_RO, True)
+
     def timer_update(self, tag='', info=''):
+        # measure timer time
+        _time = perf_counter()*1000
+        diff = _time - self.measured_timer_time
+        #print("timer_update, diff:", round(diff))
+        self.measured_timer_time = _time
+        self.timer_took_too_long = diff > 1000
+
         if self.shell is None:
             self.visible_columns = self.memo.get_prop(PROP_VISIBLE_COLUMNS)
             self.visible_lines   = self.memo.get_prop(PROP_VISIBLE_LINES)
@@ -267,13 +354,25 @@ class Terminal:
         self.btextchanged = False
         if self.block.locked():
             self.block.release()
-        sleep(0.01)
+        sleep(0.01) # let terminal thread work fast
         self.block.acquire()
 
-        if self.btextchanged:
-            self.stream.feed(self.btext.decode(ENC, errors='replace'))
+        if self.btextchanged or self.btext:
+            _time = perf_counter()*1000
+            diff = _time - self.measured_line_time
+            #canvas_proc(0, CANVAS_TEXT, "fps: "+str(round(1/diff,1)), y=30)
+            self.measured_line_time = _time
+            #if len(self.time_data) > 50:
+            #    self.time_data = self.time_data[1:]
+            if diff > 1000: diff = 1000
+            self.time_data.append([self.memo.get_line_count(), diff])
+            plot(self.time_data)
+            
+            chunk_len = len(self.btext)
+            chunk_len = chunk_len if chunk_len < 2500 else 2500
+            self.stream.feed(self.btext[:chunk_len].decode(ENC, errors='replace'))
 
-            self.screen.memo_update()
+            self.memo_update()
             self.screen.refresh_caret()
 
             self.memo.set_prop(PROP_SCROLL_VERT, self.screen.top-1)
@@ -284,7 +383,8 @@ class Terminal:
                 pass
 
             pass;               DEBUG_FEED and self.dstream.feed(self.btext.decode(ENC, errors='replace'))
-            self.btext = b''
+            #self.btext = b''
+            self.btext = self.btext[chunk_len:]
 
     def write(self, text):
         if self.shell:
@@ -473,8 +573,18 @@ class ControlTh(Thread):
                     # shell will be restarted automatically
                     self.Cmd.shell = None
                     return
-                s = os.read(self.Cmd.master,8)
-                # TODO: asciinema play https://asciinema.org/a/439918
+                # for a lot of output text - 10000 value seems ok.
+                # output speed is at least tolerable
+                s = os.read(self.Cmd.master,10000)
+                
+            
+            #if self.Cmd.timer_took_too_long:
+            #    print("sleeping 1 sec")
+            #    #sleep(TIMER_INTERVAL*2/1000)
+            #    sleep(1)
+            sleep(0.01) # let MainThread draw something very fast
+            
+            # TODO: asciinema play https://asciinema.org/a/439918
 
             if s:
                 pass;    DEBUG_READ and print(s)

@@ -1,10 +1,14 @@
 import sys
+import time
 from cudatext import *
 import cudatext_cmd as cmds
 
 from .pyte import *
 from .pyte import control as ctrl
 #from .pyte.screens import wcwidth
+from collections import namedtuple
+Margins = namedtuple("Margins", "top bottom")
+
 from functools import partial
 
 api_ver = app_api_version()
@@ -12,9 +16,67 @@ api_ver = app_api_version()
 def BGRtoRGB(hex_string):
     def rev(s): return "" if not s else rev(s[2:]) + s[:2]
     return int(rev(hex_string),16)
+    
+def plot(data,sx=450,sy=130,offsetx=0):
+#def plot(data,sx=100,sy=100,offsetx=0):
+    n_list = [d[0] for d in data]
+    min_n = min(n_list)
+    max_n = max(n_list)
+    diff_n = max_n - min_n
+    
+    time_list = [d[1] for d in data]
+    min_t = min(time_list)
+    max_t = max(time_list)
+    diff_t = max_t - min_t
 
-class MemoScreen(HistoryScreen):
-    def __init__(self, memo: Editor, columns, lines, h_dlg, colored=0):
+    canvas_proc(0, CANVAS_SET_BRUSH, color=0xdd552c)
+    canvas_proc(0, CANVAS_RECT_FILL, x=offsetx,y=0,x2=offsetx+sx,y2=sy)
+    
+    canvas_proc(0, CANVAS_SET_PEN, color=0x555555, style=PEN_STYLE_DASH, size=3)
+    canvas_proc(0, CANVAS_LINE, x=offsetx, y=sy, x2=offsetx+sx,y2=0)
+    canvas_proc(0, CANVAS_SET_PEN, color=0xaaaaaa)
+    canvas_proc(0, CANVAS_LINE, x=offsetx+1, y=sy+1, x2=offsetx+sx+1,y2=1)
+    
+    canvas_proc(0, CANVAS_SET_PEN, color=0xffffff, size=1)
+    canvas_proc(0, CANVAS_LINE, x=offsetx, y=sy, x2=offsetx+sx,y2=sy)
+    canvas_proc(0, CANVAS_LINE, x=offsetx+sx, y=sy, x2=offsetx+sx,y2=0)
+    canvas_proc(0, CANVAS_LINE, x=offsetx+sx, y=0, x2=offsetx,y2=0)
+    canvas_proc(0, CANVAS_LINE, x=offsetx, y=0, x2=offsetx,y2=sy)
+    
+    canvas_proc(0, CANVAS_SET_PEN, color=0x00ee88, size=5)
+    
+    px,py = None,None
+    for i,(n,t) in enumerate(data):
+        t = (t - min_t) * sy # scale
+        n = (n - min_n) * sx # scale
+        t = t // diff_t if diff_t != 0 else t
+        n = n // diff_n if diff_n != 0 else n
+        t, n = int(t), int(n) # to int
+        
+        if i == 0:
+            px, py = n, sy-t  # remember first point coords
+            continue # do not draw line yet, wait for second point
+        else:
+            x2, y2 = n, sy-t
+            canvas_proc(0, CANVAS_LINE, x=px+offsetx, y=py, x2=x2+offsetx,y2=y2)
+            px, py = x2, y2
+            
+            canvas_proc(0, CANVAS_SET_FONT, color=0xdddddd)
+            h = canvas_proc(0, CANVAS_GET_TEXT_SIZE, 'text')[1]
+            #canvas_proc(0, CANVAS_SET_BRUSH, style=BRUSH_CLEAR)
+            t = "time: {}".format(round(data[-1][1]/1000, 6))
+            n = "n: {}".format(data[-1][0])
+            nn = "nn: {}".format(len(data))
+            canvas_proc(0, CANVAS_TEXT, t, x=offsetx+5, y=2)
+            canvas_proc(0, CANVAS_TEXT, n, x=offsetx+5, y=h)
+            canvas_proc(0, CANVAS_TEXT, nn, x=offsetx+5, y=h*2)
+            #app_idle()
+            #sleep(0.1)
+    #canvas_proc(0, CANVAS_TEXT, 'done', x=offsetx+5, y=h*2)
+
+
+class MemoScreen(Screen):
+    def __init__(self, memo: Editor, columns, lines, h_dlg, colored=0, draw_callback=None):
         self.memo = memo
         self.h_dlg = h_dlg
         self.no_ro = partial(self.memo.set_prop, PROP_RO, False)
@@ -22,8 +84,15 @@ class MemoScreen(HistoryScreen):
 
         self.top = 1
         self.colored = colored
+        self.draw_callback = draw_callback
+        self.dirty_prev = set()
+        self.counter = 0
+        self.time_data = []
+        self.measured_line_time = time.perf_counter()*1000
 
-        super(MemoScreen, self).__init__(columns, lines, sys.maxsize)
+        #super().__init__(columns, lines, sys.maxsize)
+        #super().__init__(columns, lines, 1)
+        super().__init__(columns, lines)
 
     def render(self,line):
 #        is_wide_char = False
@@ -50,7 +119,7 @@ class MemoScreen(HistoryScreen):
         
     def erase_in_display(self, how=0, *args, **kwargs):
         """Overloaded to reset history state."""
-        super(MemoScreen, self).erase_in_display(how, *args, **kwargs)
+        super().erase_in_display(how, *args, **kwargs)
 
         if how == 3:
             self._reset_history()
@@ -61,7 +130,7 @@ class MemoScreen(HistoryScreen):
             self.cursor_position(0, 0)
 
     def set_title(self, param):
-        super(MemoScreen, self).set_title(param)
+        super().set_title(param)
         dlg_proc(self.h_dlg, DLG_PROP_SET, name='form', prop={'cap': param})
         dlg_proc(self.h_dlg, DLG_CTL_PROP_SET, name='header', prop={'cap': param})
 
@@ -69,18 +138,18 @@ class MemoScreen(HistoryScreen):
         self.no_ro()
         # TODO: this is bad, i need something better
         #self.memo.set_text_all(self.memo.get_text_all().strip())
-
+    
         # remove trailing empty lines
         for line in reversed(range(self.memo.get_line_count())):
             txt = self.memo.get_text_line(line)
             if txt is not None and txt.strip() == '':
                 self.memo.replace_lines(line, line, [])
             else: break
-
+    
         self.ro()
 
     def resize(self, lines=None, columns=None):
-        super(MemoScreen, self).resize(lines, columns)
+        super().resize(lines, columns)
         # try to strip white-space on terminal resize (will work on next resize, unfortunately)
         timer_proc(TIMER_START_ONE, self.strip_trailing_whitespace, 200)
         
@@ -90,65 +159,62 @@ class MemoScreen(HistoryScreen):
 
     def refresh_caret(self):
         self.memo.set_caret(self.cursor.x, self.cursor.y + self.top - 1, options=CARET_OPTION_NO_SCROLL)
-
-    def memo_update(self):
-        self.no_ro()
-
-        markers = [] # list of tuples: (x, y, fg, bg, bold)
-
-        # draw history lines
-        while len(self.history.top) > 0:
-            self.memo.set_text_line(-1,'')
-            chars, text = self.pop_history_line()
-            self.memo.set_text_line(self.top-1,text)
-            for x in range(self.columns): # apply colors to history line
-                colors = self.get_colors(x, self.top-1, chars)
-                if colors:
-                    markers.append(colors)
+        
+    def index(self):
+        super().index()
+        top, bottom = self.margins or Margins(0, self.lines - 1)
+    
+        
+        if self.cursor.y == bottom:
             self.top += 1
-            #print("top =",self.top)
+            
+            #canvas_proc(0, CANVAS_SET_BRUSH, color=0xa0ffa0)            
+            #canvas_proc(0, CANVAS_RECT_FILL, x=0,y=0,x2=1000,y2=1000)
+            #canvas_proc(0, CANVAS_TEXT, "lines: "+str(self.counter), x=500)
+            #canvas_proc(0, CANVAS_TEXT, "fps: "+str(round(1/diff,1)), y=30)
+            self.counter += 1
+            
+           # _time = time.perf_counter()*1000
+           # diff = _time - self.measured_line_time
+           # self.time_data.append(diff)
+           # print("measured_line_time:", round(diff))
+           # #canvas_proc(0, CANVAS_TEXT, "fps: "+str(round(1/diff,1)), y=30)
+           # self.measured_line_time = _time
+           # plot(self.time_data)
+           # print("self.time_data:", self.time_data)
+            
+            #if self.draw_callback: self.draw_callback("MYTEXT")
+            
+            #self.memo_update()
+            #self.refresh_caret()
+            #self.memo.set_prop(PROP_SCROLL_VERT, self.top-1)
+            #app_idle()
 
-        # draw screen dirty lines
-        whitespace_passed = False
-        for y_buffer in reversed(sorted(self.dirty)):
-            y_memo = y_buffer + self.top - 1
-            #print(y_memo)
-            # get text
-            text = self.render(y_buffer)
-            # process empty lines but try not to add newlines
-            if not whitespace_passed and text.strip() == '':
-                self.memo.set_text_line(y_memo, '')
-                continue
-            else: whitespace_passed = True
+        
+    def draw(self, data):
+        super().draw(data)
 
-            # add newlines as needed
-            while self.memo.get_line_count()-1 < y_memo:
-                self.memo.set_text_line(-1, '')
+        if len(self.dirty) == 1: # one line is drawing
+            if self.dirty != self.dirty_prev: # not the same line as before
+                if self.draw_callback: self.draw_callback("MYTEXT")
+                
+                #self.memo_update()
 
-            #print(y_memo,text)
-            self.memo.set_text_line(y_memo, text)
-            # apply colors to dirty line
-            for x in range(self.columns):
-                colors = self.get_colors(x, y_memo, self.buffer[y_buffer])
-                if colors:
-                    markers.append(colors)
+    #            self.refresh_caret()
+    #            self.memo.set_prop(PROP_SCROLL_VERT, self.top-1)
+    #            app_idle()
+    #            #import time
+    #            #time.sleep(0.001)        
+    #    
+    #    #while len(self.history.top) > 0:
+    #    #    self.pop_history_line()
+    #    #    self.top += 1
+    #    
+    #    #if len(self.dirty) == 1: # one line is drawing
+    #    #    if self.dirty != self.dirty_prev: # not the same line as before
+    #    #self.memo_update()
 
-        # add markers
-        if markers and api_ver >= '1.0.425':
-            m = list(zip(*markers))
-            self.memo.attr(MARKERS_ADD_MANY, x=m[0], y=m[1], len=[1]*len(markers), color_font=m[2], color_bg=m[3], font_bold=m[4])
-
-        # URL markers
-        # we must wait 10ms for url markers, they are not present yet
-        timer_proc(TIMER_START_ONE, self.apply_url_markers, 10)
-
-        # show marker count in terminal header
-        #dlg_proc(self.h_dlg, DLG_CTL_PROP_SET, name='header', prop={
-            #'cap': '{} markers'.format(len(self.memo.attr(MARKERS_GET)))
-        #})
-
-        self.dirty.clear()
-        self.ro()
+    ###
 
     def apply_url_markers(self, tag='', info=''):
         url_markers = [m for m in self.memo.attr(MARKERS_GET) if m[0] == -100] # url markers have tag -100
