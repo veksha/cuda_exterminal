@@ -130,6 +130,8 @@ class Terminal:
         self.memo.set_prop(PROP_SCROLLSTYLE_HORZ, SCROLLSTYLE_HIDE)
         self.memo.set_prop(PROP_UNPRINTED_SHOW, False)
         self.memo.set_prop(PROP_MARGIN, 2000)
+        self.memo.set_prop(PROP_HILITE_CUR_LINE, False)
+        self.memo.set_prop(PROP_HILITE_CUR_COL, False)
         
         # new api!
         if api_ver >= '1.0.425':
@@ -137,7 +139,7 @@ class Terminal:
         if api_ver >= '1.0.426':
             self.memo.set_prop(PROP_WHEEL_ZOOMS, False)
 
-        self.memo.set_prop(PROP_CARET_VIEW, (-100, 3, False))
+        #self.memo.set_prop(PROP_CARET_VIEW, (-100, 3, False))
         self.memo.set_prop(PROP_CARET_VIEW_RO, self.memo.get_prop(PROP_CARET_VIEW))
 
         self.set_theme_colors()

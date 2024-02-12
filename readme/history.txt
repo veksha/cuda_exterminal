@@ -1,3 +1,6 @@
+2024.02.12
+- fix: disabled some memo props and tweaked caret view
+
 2023.04.17
 + add: shift+Tab, ctrl+Left and ctrl+Right support
 
